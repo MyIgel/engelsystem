@@ -60,6 +60,7 @@
         "fakerphp/faker": "^1.24",
         "fig/log-test": "^1.2",
         "filp/whoops": "^2.18",
+        "php-middleware/php-debug-bar": "*",
         "phpcompatibility/php-compatibility": "^10.0.0-alpha2",
         "phpstan/phpstan": "^2.1",
         "phpunit/phpunit": "^9.6",

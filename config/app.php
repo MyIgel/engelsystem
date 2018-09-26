@@ -31,6 +31,7 @@ return [
         \Engelsystem\Middleware\RequestHandlerServiceProvider::class,
         \Engelsystem\Http\Validation\ValidationServiceProvider::class,
         \Engelsystem\Http\RedirectServiceProvider::class,
+        \Engelsystem\Middleware\DebugbarServiceProvider::class,
         \Engelsystem\Http\PaginationServiceProvider::class,
 
         // Additional services
@@ -49,6 +50,7 @@ return [
         \Engelsystem\Middleware\ExceptionHandler::class,
 
         // Changes of request/response parameters
+        \Engelsystem\Middleware\Debugbar::class,
         \Engelsystem\Middleware\SetLocale::class,
         \Engelsystem\Middleware\ETagHandler::class,
         \Engelsystem\Middleware\AddHeaders::class,
@@ -724,6 +726,7 @@ return [
                         'Content-Security-Policy' =>
                             'default-src \'self\'; '
                             . ' style-src \'self\' \'unsafe-inline\'; '
+                            . ' font-src \'self\' data:; '
                             . 'img-src \'self\' data:;',
                         'X-XSS-Protection'        => '1; mode=block',
                         'Feature-Policy'          => 'autoplay \'none\'',
