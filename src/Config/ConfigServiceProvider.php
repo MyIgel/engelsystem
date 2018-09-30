@@ -2,13 +2,29 @@
 
 namespace Engelsystem\Config;
 
+use Engelsystem\Application;
 use Engelsystem\Container\ServiceProvider;
+use Engelsystem\Models\EventConfig;
 use Exception;
 
 class ConfigServiceProvider extends ServiceProvider
 {
     /** @var array */
     protected $configFiles = ['config.default.php', 'config.php'];
+
+    /** @var EventConfig */
+    protected $eventConfig;
+
+    /**
+     * @param Application $app
+     * @param EventConfig $eventConfig
+     */
+    public function __construct(Application $app, EventConfig $eventConfig = null)
+    {
+        parent::__construct($app);
+
+        $this->eventConfig = $eventConfig;
+    }
 
     public function register()
     {
@@ -17,7 +33,7 @@ class ConfigServiceProvider extends ServiceProvider
         $this->app->instance('config', $config);
 
         foreach ($this->configFiles as $file) {
-            $file = config_path($file);
+            $file = $this->getConfigPath($file);
 
             if (!file_exists($file)) {
                 continue;
@@ -32,5 +48,47 @@ class ConfigServiceProvider extends ServiceProvider
         if (empty($config->get(null))) {
             throw new Exception('Configuration not found');
         }
+    }
+
+    public function boot()
+    {
+        if (
+            !$this->eventConfig
+            || !$this->eventConfig
+                ->getConnection()
+                ->getSchemaBuilder()
+                ->hasTable($this->eventConfig->getTable())
+        ) {
+            return;
+        }
+
+        /** @var Config $config */
+        $config = $this->app->get('config');
+        /** @var EventConfig[] $values */
+        $values = $this->eventConfig->newQuery()->get(['name', 'value']);
+
+        foreach ($values as $option) {
+            $data = $option->value;
+
+            if (is_array($data) && $config->has($option->name)) {
+                $data = array_replace_recursive(
+                    $config->get($option->name),
+                    $data
+                );
+            }
+
+            $config->set($option->name, $data);
+        }
+    }
+
+    /**
+     * Get the config path
+     *
+     * @param string $path
+     * @return string
+     */
+    protected function getConfigPath($path = ''): string
+    {
+        return config_path($path);
     }
 }
