@@ -103,6 +103,7 @@ function event_config_edit_controller()
             ) {
                 $eventConfig
                     ->findOrNew($key)
+                    ->setAttribute('name', $key)
                     ->setAttribute('value', $value)
                     ->save();
             }

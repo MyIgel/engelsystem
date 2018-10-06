@@ -372,7 +372,7 @@ function User_validate_planned_arrival_date($planned_arrival_date)
     }
 
     /** @var Carbon $teardown */
-    if (!empty($teardown) && $buildup->lessThanOrEqualTo(Carbon::createFromTimestamp($planned_arrival_date))) {
+    if (!empty($teardown) && $teardown->lessThanOrEqualTo(Carbon::createFromTimestamp($planned_arrival_date))) {
         // Planned arrival can not be after teardown end date
         return new ValidationResult(false, $teardown->getTimestamp());
     }
