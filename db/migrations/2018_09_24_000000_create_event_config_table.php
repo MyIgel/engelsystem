@@ -1,5 +1,7 @@
 <?php
 
+namespace Engelsystem\Migrations;
+
 use Carbon\Carbon;
 use Engelsystem\Database\Migration\Migration;
 use Engelsystem\Models\EventConfig;
