@@ -59,7 +59,7 @@ return [
         '3' => 'Engelsystem 32c3 (2015)',
         '2' => 'Engelsystem cccamp15',
         '0' => 'Engelsystem light',
-        '1' => 'Engelsystem dark'
+        '1' => 'Engelsystem dark',
     ],
 
     // Rewrite URLs with mod_rewrite
@@ -132,7 +132,7 @@ return [
         'XL-G' => 'XL Girl',
         '2XL'  => '2XL',
         '3XL'  => '3XL',
-        '4XL'  => '4XL'
+        '4XL'  => '4XL',
     ],
 
     // Session config
