@@ -17,6 +17,7 @@ return [
         \Engelsystem\Database\DatabaseServiceProvider::class,
         \Engelsystem\Http\RequestServiceProvider::class,
         \Engelsystem\Http\SessionServiceProvider::class,
+        \Engelsystem\Kif465\DevilsTranslatorServiceProvider::class,
         \Engelsystem\Helpers\TranslationServiceProvider::class,
         \Engelsystem\Http\ResponseServiceProvider::class,
         \Engelsystem\Http\Psr7ServiceProvider::class,
