@@ -18,6 +18,7 @@ return [
         \Engelsystem\Database\DatabaseServiceProvider::class,
         \Engelsystem\Http\RequestServiceProvider::class,
         \Engelsystem\Http\SessionServiceProvider::class,
+        \Engelsystem\EventSpecific\TranslationServiceProvider::class,
         \Engelsystem\Helpers\Translation\TranslationServiceProvider::class,
         \Engelsystem\Http\ResponseServiceProvider::class,
         \Engelsystem\Http\Psr7ServiceProvider::class,
