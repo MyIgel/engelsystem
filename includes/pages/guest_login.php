@@ -48,7 +48,7 @@ function guest_register()
     $email = '';
     $pronoun = '';
     $email_shiftinfo = false;
-    $email_by_human_allowed = false;
+    $email_by_human_allowed = true;
     $email_news = false;
     $email_goody = false;
     $tshirt_size = '';
