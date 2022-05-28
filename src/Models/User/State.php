@@ -13,6 +13,7 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
  * @property bool        $force_active
  * @property bool        $got_shirt
  * @property int         $got_voucher
+ * @property string      $token
  *
  * @method static QueryBuilder|State[] whereArrived($value)
  * @method static QueryBuilder|State[] whereArrivalDate($value)
@@ -20,6 +21,7 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
  * @method static QueryBuilder|State[] whereForceActive($value)
  * @method static QueryBuilder|State[] whereGotShirt($value)
  * @method static QueryBuilder|State[] whereGotVoucher($value)
+ * @method static QueryBuilder|State[] whereToken($value)
  */
 class State extends HasUserModel
 {
@@ -35,6 +37,7 @@ class State extends HasUserModel
         'force_active' => false,
         'got_shirt'    => false,
         'got_voucher'  => 0,
+        'token'        => null,
     ];
 
     /** @var array */
@@ -61,5 +64,6 @@ class State extends HasUserModel
         'force_active',
         'got_shirt',
         'got_voucher',
+        'token',
     ];
 }

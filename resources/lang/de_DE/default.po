@@ -1560,6 +1560,15 @@ msgstr "User bearbeiten"
 msgid "Please enter a valid nick."
 msgstr "Gib bitte einen erlaubten Nick an."
 
+msgid "Your registration code is not valid or already used."
+msgstr "Dein Registrierungscode ist nicht gültig oder wurde bereits verwendet."
+
+msgid "You can find it on your ticket."
+msgstr "Du findest ihn auf deinem Ticket."
+
+msgid "Registration code"
+msgstr "Registrierungscode"
+
 #: includes/pages/guest_login.php:77 includes/pages/guest_login.php:277
 #: includes/view/User_view.php:42
 msgid ""

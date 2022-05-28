@@ -321,6 +321,9 @@ return [
         '4XL'  => '4XLarge Straight-Cut',
     ],
 
+    // List of codes which are valid for registration
+    'registration_tokens' => [],
+
     'metrics'                 => [
         // User work buckets in seconds
         'work'    => [1 * 60 * 60, 1.5 * 60 * 60, 2 * 60 * 60, 3 * 60 * 60, 5 * 60 * 60, 10 * 60 * 60, 20 * 60 * 60],

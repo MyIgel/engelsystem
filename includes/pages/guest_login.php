@@ -29,6 +29,7 @@ function guest_register()
     $tshirt_sizes = config('tshirt_sizes');
     $enable_tshirt_size = config('enable_tshirt_size');
     $enable_user_name = config('enable_user_name');
+    $registration_tokens = config('registration_tokens');
     $enable_dect = config('enable_dect');
     $enable_planned_arrival = config('enable_planned_arrival');
     $min_password_length = config('min_password_length');
@@ -38,6 +39,7 @@ function guest_register()
     $request = request();
     $session = session();
     $is_oauth = $session->has('oauth2_connect_provider');
+    $token = $request->get('registration_token');
 
     $msg = '';
     $nick = '';
@@ -181,6 +183,19 @@ function guest_register()
             error(__('Please enter your planned date of arrival. It should be after the buildup start date and before teardown end date.'));
         }
 
+        if (
+            !$authUser
+            && $registration_tokens
+            && (
+                !$token
+                || !in_array($token, config('registration_tokens'))
+                || State::whereToken($token)->get()->toArray()
+            )
+        ) {
+            $valid = false;
+            error(__('Your registration code is not valid or already used.'));
+        }
+
         $selected_angel_types = [];
         foreach (array_keys($angel_types) as $angel_type_id) {
             if ($request->has('angel_types_' . $angel_type_id)) {
@@ -256,6 +271,7 @@ function guest_register()
                 $state->arrived = true;
                 $state->arrival_date = new Carbon();
             }
+            $state->token = $token;
             $state->user()
                 ->associate($user)
                 ->save();
@@ -376,6 +392,18 @@ function guest_register()
                     form_text('pronoun', __('Pronoun'), $pronoun, false, 15)
                 ]) : '',
             ]),
+            $registration_tokens ? div('row', [
+                div('col', [
+                    form_text(
+                        'registration_token',
+                        __('Registration code') . ' ' . entry_required(),
+                        $token
+                    ),
+                ]),
+                form_info('',
+                    __('You can find it on your ticket.')
+                )
+            ]) : '',
 
             $enable_user_name ? div('row', [
                 div('col', [

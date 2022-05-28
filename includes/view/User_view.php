@@ -810,6 +810,10 @@ function User_view_state_admin($freeloader, $user_source)
             . '</span>';
     }
 
+    if ($user_source->state->token) {
+        $state[] = __('Code: %s', [htmlspecialchars($user_source->state->token)]);
+    }
+
     return $state;
 }
 
