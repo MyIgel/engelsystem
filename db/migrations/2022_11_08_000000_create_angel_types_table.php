@@ -22,7 +22,8 @@ class CreateAngelTypesTable extends Migration
         $this->schema->create('angel_types', function (Blueprint $table): void {
             $table->increments('id');
             $table->string('name')->unique();
-            $table->text('description')->default('');
+            // Can only default null, see https://bugs.mysql.com/bug.php?id=21532
+            $table->text('description')->nullable()->default(null);
 
             $table->string('contact_name')->default('');
             $table->string('contact_dect')->default('');

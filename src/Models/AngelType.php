@@ -17,7 +17,7 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
 /**
  * @property int                               $id
  * @property string                            $name
- * @property string                            $description
+ * @property string|null                       $description
  * @property string                            $contact_name
  * @property string                            $contact_dect
  * @property string                            $contact_email

@@ -29,7 +29,8 @@ class CreateShiftsTable extends Migration
         $this->schema->create('shifts', function (Blueprint $table): void {
             $table->increments('id');
             $table->string('title');
-            $table->text('description')->default('');
+            // Can only default null, see https://bugs.mysql.com/bug.php?id=21532
+            $table->text('description')->nullable()->default(null);
             $table->string('url')->default('');
             $table->dateTime('start')->index();
             $table->dateTime('end');
@@ -97,6 +98,7 @@ class CreateShiftsTable extends Migration
             $table->increments('SID');
             $table->mediumText('title')->nullable()->default(null);
             $this->references($table, 'shift_types', 'shifttype_id');
+            // Must be nullable, see https://bugs.mysql.com/bug.php?id=21532
             $table->text('description')->nullable()->default(null);
             $table->integer('start')->index();
             $table->integer('end');

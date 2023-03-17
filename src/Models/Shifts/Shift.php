@@ -18,7 +18,7 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
 /**
  * @property int                               $id
  * @property string                            $title
- * @property string                            $description
+ * @property string|null                       $description
  * @property string                            $url
  * @property Carbon                            $start
  * @property Carbon                            $end
