@@ -27,10 +27,12 @@ class CreateShiftEntriesTable extends Migration
             $this->references($table, 'angel_types');
             $this->referencesUser($table);
 
-            $table->mediumText('user_comment')->default('');
+            // Can only default to null, see https://bugs.mysql.com/bug.php?id=21532
+            $table->mediumText('user_comment')->nullable()->default(null);
 
             $table->boolean('freeloaded')->default(false)->index();
-            $table->mediumText('freeloaded_comment')->default('');
+            // Can only default to null, see https://bugs.mysql.com/bug.php?id=21532
+            $table->mediumText('freeloaded_comment')->nullable()->default(null);
 
             $table->index(['angel_type_id', 'shift_id']);
         });

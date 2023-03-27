@@ -7,7 +7,7 @@ namespace Engelsystem\Migrations;
 use Engelsystem\Database\Migration\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class FixMysqlTextMigrationsDefaultToNull extends Migration
+class FixMysqlTextMigrationsDefaultToNullForShiftEntries extends Migration
 {
     /**
      * Run the migration
@@ -18,12 +18,9 @@ class FixMysqlTextMigrationsDefaultToNull extends Migration
      */
     public function up(): void
     {
-        $this->schema->table('angel_types', function (Blueprint $table): void {
-            $table->text('description')->nullable()->default(null)->change();
-        });
-
-        $this->schema->table('shifts', function (Blueprint $table): void {
-            $table->text('description')->nullable()->default(null)->change();
+        $this->schema->table('shift_entries', function (Blueprint $table): void {
+            $table->mediumText('user_comment')->nullable()->default(null)->change();
+            $table->mediumText('freeloaded_comment')->nullable()->default(null)->change();
         });
     }
 

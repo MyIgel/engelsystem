@@ -15,9 +15,9 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
  * @property int            $id
  * @property int            $shift_id
  * @property int            $angel_type_id
- * @property string         $user_comment
+ * @property string|null    $user_comment
  * @property bool           $freeloaded
- * @property string         $freeloaded_comment
+ * @property string|null    $freeloaded_comment
  *
  * @property-read Shift     $shift
  * @property-read AngelType $angelType
