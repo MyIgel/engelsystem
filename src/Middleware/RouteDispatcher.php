@@ -6,6 +6,7 @@ namespace Engelsystem\Middleware;
 
 use Engelsystem\Http\Request;
 use FastRoute\Dispatcher as FastRouteDispatcher;
+use Illuminate\Support\Str;
 use Nyholm\Psr7\Uri;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -14,18 +15,16 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class RouteDispatcher implements MiddlewareInterface
 {
-    protected ?MiddlewareInterface $notFound = null;
-
     /**
-     * @param ResponseInterface        $response Default response
+     * @param ResponseInterface $response Default response
      * @param MiddlewareInterface|null $notFound Handles any requests if the route can't be found
      */
     public function __construct(
         protected FastRouteDispatcher $dispatcher,
         protected ResponseInterface $response,
-        MiddlewareInterface $notFound = null
+        protected ?string $apiPrefix = null,
+        protected ?MiddlewareInterface $notFound = null
     ) {
-        $this->notFound = $notFound;
     }
 
     /**
@@ -61,6 +60,9 @@ class RouteDispatcher implements MiddlewareInterface
         $routeHandler = $route[1];
         $request = $request->withAttribute('route-request-handler', $routeHandler);
         $request = $request->withAttribute('route-request-path', $path);
+
+        $isApi = $this->apiPrefix && Str::startsWith($path, $this->apiPrefix);
+        $request = $request->withAttribute('route-api', $isApi);
 
         $vars = $route[2];
         foreach ($vars as $name => $value) {

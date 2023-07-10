@@ -38,15 +38,10 @@ class SessionHandlerTest extends TestCase
             ->method('getCookieParams')
             ->willReturnOnConsecutiveCalls([], ['SESSION' => 'BlaFoo']);
 
-        $request->expects($this->exactly(2))
+        $request->expects($this->exactly(4))
             ->method('getAttribute')
-            ->with('route-request-path')
-            ->willReturnOnConsecutiveCalls('/foo', '/lorem');
-
-        $request->expects($this->exactly(2))
-            ->method('withAttribute')
-            ->withConsecutive(['route-api', true], ['route-api', false])
-            ->willReturn($request);
+            ->withConsecutive(['route-request-path'], ['route-api'], ['route-request-path'], ['route-api'])
+            ->willReturnOnConsecutiveCalls('/foo', false, '/lorem', false);
 
         $sessionStorage->expects($this->once())
             ->method('getName')

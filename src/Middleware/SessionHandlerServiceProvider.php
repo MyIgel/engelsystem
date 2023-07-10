@@ -24,9 +24,5 @@ class SessionHandlerServiceProvider extends ServiceProvider
                     '/stats',
                 ];
             });
-        $this->app
-            ->when(SessionHandler::class)
-            ->needs('$apiPrefix')
-            ->give('/api');
     }
 }
