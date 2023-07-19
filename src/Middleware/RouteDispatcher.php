@@ -6,7 +6,6 @@ namespace Engelsystem\Middleware;
 
 use Engelsystem\Http\Request;
 use FastRoute\Dispatcher as FastRouteDispatcher;
-use Illuminate\Support\Str;
 use Nyholm\Psr7\Uri;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -22,7 +21,6 @@ class RouteDispatcher implements MiddlewareInterface
     public function __construct(
         protected FastRouteDispatcher $dispatcher,
         protected ResponseInterface $response,
-        protected ?string $apiPrefix = null,
         protected ?MiddlewareInterface $notFound = null
     ) {
     }
@@ -60,9 +58,6 @@ class RouteDispatcher implements MiddlewareInterface
         $routeHandler = $route[1];
         $request = $request->withAttribute('route-request-handler', $routeHandler);
         $request = $request->withAttribute('route-request-path', $path);
-
-        $isApi = $this->apiPrefix && Str::startsWith($path, $this->apiPrefix);
-        $request = $request->withAttribute('route-api', $isApi);
 
         $vars = $route[2];
         foreach ($vars as $name => $value) {

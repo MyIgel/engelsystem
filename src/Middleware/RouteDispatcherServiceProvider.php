@@ -40,11 +40,6 @@ class RouteDispatcherServiceProvider extends ServiceProvider
             ->when(RouteDispatcher::class)
             ->needs(MiddlewareInterface::class)
             ->give(LegacyMiddleware::class);
-
-        $this->app
-            ->when(RouteDispatcher::class)
-            ->needs('$apiPrefix')
-            ->give('/api');
     }
 
     /**

@@ -54,6 +54,7 @@ return [
 
         // The application code
         \Engelsystem\Middleware\ErrorHandler::class,
+        \Engelsystem\Middleware\ApiRouteHandler::class,
         \Engelsystem\Middleware\VerifyCsrfToken::class,
         \Engelsystem\Middleware\RouteDispatcher::class,
         \Engelsystem\Middleware\SessionHandler::class,

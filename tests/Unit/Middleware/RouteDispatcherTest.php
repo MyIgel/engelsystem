@@ -33,12 +33,11 @@ class RouteDispatcherTest extends TestCase
             ->with('HEAD', '/foo!bar')
             ->willReturn([FastRouteDispatcher::FOUND, $handler, ['foo' => 'bar', 'lorem' => 'ipsum']]);
 
-        $request->expects($this->exactly(5))
+        $request->expects($this->exactly(4))
             ->method('withAttribute')
             ->withConsecutive(
                 ['route-request-handler', $handler],
                 ['route-request-path', '/foo!bar'],
-                ['route-api', false],
                 ['foo', 'bar'],
                 ['lorem', 'ipsum']
             )
@@ -82,46 +81,12 @@ class RouteDispatcherTest extends TestCase
             ->with($request, $handler)
             ->willReturn($response);
 
-        $middleware = new RouteDispatcher($dispatcher, $response, null, $notFound);
+        $middleware = new RouteDispatcher($dispatcher, $response, $notFound);
         $return = $middleware->process($request, $handler);
         $this->assertEquals($response, $return);
 
         $middleware = new RouteDispatcher($dispatcher, $response);
         $return = $middleware->process($request, $handler);
-        $this->assertEquals($response, $return);
-    }
-
-    /**
-     * @covers \Engelsystem\Middleware\RouteDispatcher::process
-     */
-    public function testProcessApi(): void
-    {
-        /** @var FastRouteDispatcher|MockObject $dispatcher */
-        /** @var ResponseInterface|MockObject $response */
-        /** @var RequestHandlerInterface|MockObject $handler */
-        list($dispatcher, $response, , $handler) = $this->getMocks(false);
-
-        $dispatcher->expects($this->exactly(2))
-            ->method('dispatch')
-            ->withConsecutive(['GET', '/api/foo'], ['GET', '/lorem'])
-            ->willReturn([FastRouteDispatcher::FOUND, $handler, []]);
-
-        $handler->expects($this->exactly(2))
-            ->method('handle')
-            ->willReturnCallback(function (ServerRequestInterface $request) use ($response) {
-                $this->assertIsBool($request->getAttribute('route-api'));
-
-                return $response;
-            });
-
-        $rd = new RouteDispatcher($dispatcher, $response);
-
-        $request = Request::create('/api/foo');
-        $return = $rd->process($request, $handler);
-        $this->assertEquals($response, $return);
-
-        $request = Request::create('/lorem');
-        $return = $rd->process($request, $handler);
         $this->assertEquals($response, $return);
     }
 
@@ -155,7 +120,7 @@ class RouteDispatcherTest extends TestCase
         $this->assertEquals($response, $return);
     }
 
-    protected function getMocks(bool $mockRequest = true): array
+    protected function getMocks(): array
     {
         /** @var FastRouteDispatcher|MockObject $dispatcher */
         $dispatcher = $this->getMockForAbstractClass(FastRouteDispatcher::class);
@@ -166,17 +131,15 @@ class RouteDispatcherTest extends TestCase
         /** @var RequestHandlerInterface|MockObject $handler */
         $handler = $this->getMockForAbstractClass(RequestHandlerInterface::class);
 
-        if ($mockRequest) {
-            $request->expects($this->atLeastOnce())
-                ->method('getMethod')
-                ->willReturn('HEAD');
-            $request->expects($this->atLeastOnce())
-                ->method('getUri')
-                ->willReturn('http://foo.bar/lorem/foo%21bar');
-            $request->expects($this->atLeastOnce())
-                ->method('getPathInfo')
-                ->willReturn('/foo%21bar');
-        }
+        $request->expects($this->atLeastOnce())
+            ->method('getMethod')
+            ->willReturn('HEAD');
+        $request->expects($this->atLeastOnce())
+            ->method('getUri')
+            ->willReturn('http://foo.bar/lorem/foo%21bar');
+        $request->expects($this->atLeastOnce())
+            ->method('getPathInfo')
+            ->willReturn('/foo%21bar');
 
         return [$dispatcher, $response, $request, $handler];
     }

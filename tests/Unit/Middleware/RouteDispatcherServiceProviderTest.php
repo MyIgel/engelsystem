@@ -38,28 +38,27 @@ class RouteDispatcherServiceProviderTest extends ServiceProviderTest
             ->method('alias')
             ->with(RouteDispatcher::class, 'route.dispatcher');
 
-        $app->expects($this->exactly(3))
+        $app->expects($this->exactly(2))
             ->method('when')
             ->with(RouteDispatcher::class)
             ->willReturn($bindingBuilder);
 
-        $bindingBuilder->expects($this->exactly(3))
+        $bindingBuilder->expects($this->exactly(2))
             ->method('needs')
             ->withConsecutive(
                 [FastRouteDispatcher::class],
-                [MiddlewareInterface::class],
-                ['$apiPrefix']
+                [MiddlewareInterface::class]
             )
             ->willReturn($bindingBuilder);
 
-        $bindingBuilder->expects($this->exactly(3))
+        $bindingBuilder->expects($this->exactly(2))
             ->method('give')
             ->with($this->callback(function ($subject) {
                 if (is_callable($subject)) {
                     $subject();
                 }
 
-                return is_callable($subject) || $subject == LegacyMiddleware::class || $subject == '/api';
+                return is_callable($subject) || $subject == LegacyMiddleware::class;
             }));
 
         /** @var RouteDispatcherServiceProvider|MockObject $serviceProvider */
