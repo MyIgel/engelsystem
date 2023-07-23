@@ -122,6 +122,7 @@ $route->addGroup(
                 $route->get('/angeltypes', 'Api\AngelTypeController@index');
                 $route->get('/news', 'Api\NewsController@index');
                 $route->get('/rooms', 'Api\RoomsController@index');
+                $route->get('/rooms/{room_id:\d+}/shifts', 'Api\ShiftsController@entriesByRoom');
 
                 $route->addRoute(
                     ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD'],
