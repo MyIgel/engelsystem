@@ -18,7 +18,7 @@ class NewsControllerTest extends ApiBaseControllerTest
         $this->initDatabase();
         News::factory(3)->create();
 
-        $controller = new NewsController(new Response());
+        $controller = new NewsController(new Response(), $this->url);
 
         $response = $controller->index();
         $this->validateApiResponse('/news', 'get', $response);
