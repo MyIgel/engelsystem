@@ -46,7 +46,13 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    NotImplementedError: # 501
+    NotFoundError: # 404
+      description: This resource can not be found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotImplementedError: # 405
       description: This endpoint or method is not implemented
       content:
         application/json:
@@ -393,3 +399,5 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         '403':
           $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
