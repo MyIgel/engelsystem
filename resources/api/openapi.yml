@@ -25,6 +25,8 @@ tags:
     description: News and meeting announcements
   - name: shift
     description: Event shifts and location
+  - name: user
+    description: User information
 
 components:
   securitySchemes:
@@ -81,6 +83,24 @@ components:
         - name
         - description
         - url
+    UserAngelType:
+      allOf:
+        - $ref: '#/components/schemas/AngelType'
+        - type: object
+          properties:
+            confirmed:
+              type: boolean
+              example: true
+              description: |
+                If the user is confirmed
+                (either by the angeltype not requiring confirmation, being a supporter or being confirmed by one).
+            supporter:
+              type: boolean
+              example: false
+              description: If the user is a supporter of the angeltype.
+          required:
+            - confirmed
+            - supporter
     Error:
       type: object
       properties:
@@ -395,6 +415,38 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/Shift'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+
+  /users/{id}/angeltypes:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: The user identifier
+        example: 42
+        schema:
+          type: integer
+    get:
+      tags:
+        - user
+      summary: Get the users angel types
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/UserAngelType'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
         '403':
