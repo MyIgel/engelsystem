@@ -2008,3 +2008,6 @@ msgstr "Die Engelregistrierung ist deaktiviert"
 
 msgid "pages.sign-up.successful"
 msgstr "Engelregistrierung erfolgreich! Du kannst dich jetzt anmelden!"
+
+msgid "confirmation.delete"
+msgstr "Möchtest du es wirklich löschen?"

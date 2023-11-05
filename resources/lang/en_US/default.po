@@ -596,3 +596,6 @@ msgstr "The angel registration is disabled"
 
 msgid "pages.sign-up.successful"
 msgstr "Angel sign-up success. You can now log in."
+
+msgid "confirmation.delete"
+msgstr "Do you really want to delete it?"
