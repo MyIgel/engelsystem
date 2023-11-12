@@ -192,12 +192,12 @@ components:
           description: |
             Shift description, should be added to the shift type description as it might be empty.
             Normally contains additional information for a specific shift / task.
-        start:
+        starts_at:
           type: string
           format: date-time
           description: DateTime in ISO-8601 format
           example: 2023-05-13T14:00:00.000000Z
-        end:
+        ends_at:
           type: string
           format: date-time
           description: DateTime in ISO-8601 format
@@ -230,8 +230,8 @@ components:
         - id
         - title
         - description
-        - start
-        - end
+        - starts_at
+        - ends_at
         - location
         - shift_type
         - created_at
