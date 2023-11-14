@@ -447,6 +447,17 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/UserAngelType'
+
+  /openapi.json:
+    get:
+      tags:
+        - api
+      summary: Get the OpenAPI definition
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json: {}
         '401':
           $ref: '#/components/responses/UnauthorizedError'
         '403':

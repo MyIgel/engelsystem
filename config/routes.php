@@ -118,6 +118,7 @@ $route->addGroup(
             function (RouteCollector $route): void {
                 $route->addRoute(['OPTIONS'], '[/{resource:.+}]', 'Api\IndexController@options');
                 $route->get('', 'Api\IndexController@indexV0');
+                $route->get('/openapi.json', 'Api\IndexController@openapiV0');
 
                 $route->get('/angeltypes', 'Api\AngelTypeController@index');
                 $route->get('/news', 'Api\NewsController@index');
@@ -134,6 +135,12 @@ $route->addGroup(
             }
         );
         $route->get('/[{resource:.+}]', 'Api\IndexController@notFound');
+    }
+);
+$route->addGroup(
+    '/api-docs',
+    function (RouteCollector $route): void {
+        $route->get('[{file:.+}]', 'Api\UiController@resource');
     }
 );
 
