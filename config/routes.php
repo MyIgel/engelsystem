@@ -170,6 +170,12 @@ $route->addGroup(
         $route->get('/[{resource:.+}]', 'Api\IndexController@notFound');
     }
 );
+$route->addGroup(
+    '/api-docs',
+    function (RouteCollector $route): void {
+        $route->get('[{file:.+}]', 'Api\UiController@resource');
+    }
+);
 
 // Feeds
 $route->get('/atom', 'FeedController@atom');
