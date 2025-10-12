@@ -3,7 +3,11 @@
 {% macro field(name, options) %}
     {% set info = options['info']|default('config.' ~ name ~ '.info') %}
     {% if __(info) != info %}
-        {% set options = options|merge({'info': __(info)}) %}
+        {# % set options = options|merge({'info': __(info)}) %#}
+    {% endif %}
+    {% set options = options|filter((v, k) => k != 'info') %}
+    {% if __(info) == info %}
+        {% set info = '' %}
     {% endif %}
     {% if options.warning|default(false) %}
         {% set options = options|merge({
@@ -49,6 +53,11 @@
         {{ f.select(name, __(options['name']), options.data, options + {'selected': value, 'translate': true}) }}
     {% elseif options.type == 'select_multi' %}
         {{ f.select(name, __(options['name']), options.data, options + {'selected': value, 'translate': true, 'multiple': true}) }}
+    {% endif %}
+    {% if info %}
+        <div class="form-text">
+            {{ __(info) }}<br><br>
+        </div>
     {% endif %}
 {%- endmacro %}
 
