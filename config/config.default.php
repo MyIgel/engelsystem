@@ -243,9 +243,6 @@ return [
         'dect'               => (bool) env('DECT_REQUIRED', false),
     ],
 
-    // Local timezone
-    'timezone'                => env('TIMEZONE', 'Europe/Berlin'),
-
     // Multiply 'night shifts' between start and end (numbers as hours) by multiplier in goodie score
     // Goodies must be enabled to use this feature
     'night_shifts'            => [
