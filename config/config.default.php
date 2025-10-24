@@ -233,16 +233,6 @@ return [
         ],
     ],
 
-    // Required user fields
-    'required_user_fields' => [
-        'pronoun'            => (bool) env('PRONOUN_REQUIRED', false),
-        'firstname'          => (bool) env('FIRSTNAME_REQUIRED', false),
-        'lastname'           => (bool) env('LASTNAME_REQUIRED', false),
-        'tshirt_size'        => (bool) env('TSHIRT_SIZE_REQUIRED', true),
-        'mobile'             => (bool) env('MOBILE_REQUIRED', false),
-        'dect'               => (bool) env('DECT_REQUIRED', false),
-    ],
-
     // Multiply 'night shifts' between start and end (numbers as hours) by multiplier in goodie score
     // Goodies must be enabled to use this feature
     'night_shifts'            => [
