@@ -17,8 +17,11 @@ class ConfigTest extends TestCase
         $config = new Config();
 
         $config->set('test', 'FooBar');
-        $this->assertEquals(['test' => 'FooBar'], $config->get(null));
+        $config->set('some', ['key' => 'value']);
+        $this->assertEquals(['test' => 'FooBar', 'some' => ['key' => 'value']], $config->get(null));
         $this->assertEquals('FooBar', $config->get('test'));
+        $this->assertEquals(['key' => 'value'], $config->get('some'));
+        $this->assertEquals('value', $config->get('some.key'));
 
         $this->assertEquals('defaultValue', $config->get('notExisting', 'defaultValue'));
 
@@ -41,6 +44,9 @@ class ConfigTest extends TestCase
         ]);
         $this->assertEquals('Engelsystem', $config->get('name'));
         $this->assertEquals(['user' => 'test'], $config->get('mail'));
+
+        $config->set('some.key', 'value');
+        $this->assertEquals('value', $config->get('some.key'));
     }
 
     /**

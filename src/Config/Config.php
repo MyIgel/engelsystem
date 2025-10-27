@@ -11,20 +11,13 @@ class Config extends Fluent
      */
     protected $attributes = []; // phpcs:ignore
 
-    /**
-     * @param string|array $key
-     */
     public function get(mixed $key, mixed $default = null): mixed
     {
         if (is_null($key)) {
             return $this->attributes;
         }
 
-        if ($this->has($key)) {
-            return $this->attributes[$key];
-        }
-
-        return $default;
+        return parent::get($key, $default);
     }
 
     /**
@@ -40,7 +33,7 @@ class Config extends Fluent
             return;
         }
 
-        $this->attributes[$key] = $value;
+        parent::set($key, $value);
     }
 
     /**
