@@ -223,6 +223,25 @@ return [
                     'type' => 'boolean',
                     'default' => true,
                 ],
+                'voucher_settings.initial_vouchers' => [
+                    'type' => 'number',
+                    'default' => 0,
+                    'env' => 'INITIAL_VOUCHERS',
+                ],
+                'voucher_settings.shifts_per_voucher' => [
+                    'type' => 'number',
+                    'default' => 0,
+                    'env' => 'SHIFTS_PER_VOUCHER',
+                ],
+                'voucher_settings.hours_per_voucher' => [
+                    'type' => 'number',
+                    'default' => 2,
+                    'env' => 'HOURS_PER_VOUCHER',
+                ],
+                'voucher_settings.voucher_start' => [
+                    'type' => 'date',
+                    'env' => 'VOUCHER_START',
+                ],
                 'enable_force_food' => [
                     'type' => 'boolean',
                     'default' => false,
