@@ -1,0 +1,126 @@
+#!/usr/bin/env php
+<?php
+
+use Engelsystem\Application;
+use Engelsystem\Config\Config;
+use Engelsystem\Environment;
+use Engelsystem\Exceptions\Handler;
+use Engelsystem\Exceptions\Handlers\NullHandler;
+use Engelsystem\Helpers\Carbon;
+use Engelsystem\Models\OAuth;
+use League\OAuth2\Client\Provider\GenericProvider;
+use League\OAuth2\Client\Token\AccessToken;
+
+require_once __DIR__ . '/../includes/application.php';
+
+/** @var Application $app */
+$app = app();
+
+/** @var Handler $errorHandler */
+$errorHandler = $app->get(Handler::class);
+$errorHandler->setHandler(Environment::PRODUCTION, new NullHandler());
+
+/** @var Config $config */
+$config = $app->get('config');
+
+$script = array_shift($argv);
+$allArgs = $argv;
+$providerName = array_shift($argv);
+$allArgs = array_map('strtolower', $allArgs);
+if (
+    empty($providerName)
+    || in_array('help', $allArgs)
+    || in_array('--help', $allArgs)
+    || in_array('-h', $allArgs)
+) {
+    echo 'Usage: ' . $script . ' [oauth provider]' . PHP_EOL;
+    echo 'Migrate user oauth identifiers to another value.' . PHP_EOL;
+    echo 'The corresponding config.php id must be changed before migrating.' . PHP_EOL;
+    echo PHP_EOL;
+    echo '  [oauth provider]    Config key of the OAuth provider (required)' . PHP_EOL;
+    echo '  -h, --help,  help   Show this help' . PHP_EOL;
+    echo PHP_EOL;
+    echo 'Examples:' . PHP_EOL;
+    echo '  ' . $script . ' test' . PHP_EOL;
+    echo PHP_EOL;
+    exit(empty($providerName) ? 1 : 0);
+}
+
+if (!array_key_exists($providerName, $config['oauth'])) {
+    echo 'Provider not configured' . PHP_EOL;
+    exit(2);
+}
+
+/** @var array $oauthConfig */
+$oauthConfig = $config['oauth'][$providerName];
+
+$provider = new GenericProvider([
+    'clientId' => $oauthConfig['client_id'],
+    'clientSecret' => $oauthConfig['client_secret'],
+    'redirectUri' => url()->to('oauth/' . $providerName),
+    'urlAuthorize' => $oauthConfig['url_auth'],
+    'urlAccessToken' => $oauthConfig['url_token'],
+    'urlResourceOwnerDetails' => $oauthConfig['url_info'],
+    'responseResourceOwnerId' => $oauthConfig['id'],
+]);
+
+$entries = OAuth::where('provider', $providerName)->get();
+
+/** @var OAuth $entry */
+foreach ($entries as $entry) {
+    $user = $entry->user;
+    printf(
+        'user %s (%s)' . PHP_EOL,
+        $user->name,
+        $user->id,
+    );
+
+    $accessToken = new AccessToken([
+        'access_token' => $entry->access_token,
+        'refresh_token' => $entry->refresh_token,
+        'expires' => $entry->expires_at?->timestamp
+    ]);
+    if ($accessToken->hasExpired()) {
+        printf('  updating oauth token' . PHP_EOL);
+        try {
+            $accessToken = $provider->getAccessToken('refresh_token', [
+                'refresh_token' => $accessToken->getRefreshToken(),
+            ]);
+        } catch (Exception $e) {
+            printf('  error updating oauth token: %s' . PHP_EOL, $e->getMessage());
+            continue;
+        }
+
+        $expirationTime = $accessToken->getExpires();
+        $expirationTime = $expirationTime
+            ? Carbon::createFromTimestamp($expirationTime, Carbon::now()->timezone)
+            : null;
+        $entry->access_token = $accessToken->getToken();
+        $entry->refresh_token = $accessToken->getRefreshToken();
+        $entry->expires_at = $expirationTime;
+        $entry->save();
+    }
+
+    try {
+        $info = $provider->getResourceOwner($accessToken);
+    } catch (Exception $e) {
+        printf('  error accessing oauth info: %s' . PHP_EOL, $e->getMessage());
+        continue;
+    }
+
+    $infoData = $info->toArray();
+    printf('  oauth: %s' . PHP_EOL, json_encode($infoData));
+
+    $oldId = $entry->identifier;
+    $newId = $info->getId();
+
+    if ($oldId === $newId) {
+        print('  skipping' . PHP_EOL);
+        continue;
+    }
+
+    printf('  updating "%s" => "%s"' . PHP_EOL, $oldId, $newId);
+
+    $entry->identifier = $newId;
+    $entry->save();
+}
