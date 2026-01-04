@@ -24,6 +24,7 @@ use Engelsystem\Renderer\Twig\Extensions\Uuid;
 use Symfony\Component\VarDumper\VarDumper;
 use Twig\Environment as Twig;
 use Twig\Extension\CoreExtension as TwigCore;
+use Twig\Loader\FilesystemLoader;
 use Twig\Loader\LoaderInterface as TwigLoaderInterface;
 use TwigBridge\Extension\Laravel\Model as TwigModel;
 
@@ -75,11 +76,27 @@ class TwigServiceProvider extends ServiceProvider
             $dev = $this->app->get('twig.extension.develop');
             $dev->setDumper($this->app->make(VarDumper::class));
         }
+
+        // Prepend views from plugins
+        foreach ($this->app->tagged('plugin.path') as $path) {
+            $viewsPath = $path . 'views/';
+            if (!is_dir($viewsPath)) {
+                continue;
+            }
+
+            foreach ($this->app->tagged('twig.loader') as $loader) {
+                if (!$loader instanceof FilesystemLoader) {
+                    continue;
+                }
+                $loader->prependPath($viewsPath);
+            }
+        }
     }
 
     protected function registerTwigEngine(): void
     {
-        $viewsPath = $this->app->get('path.views');
+        // Paths are added twice to allow "more specific" overwrites with "views/" prefix from plugin templates
+        $viewsPath = [$this->app->get('path.views'), $this->app->get('path.views') . '/..'];
         /** @var EngelsystemConfig $config */
         $config = $this->app->get('config');
 
@@ -87,9 +104,11 @@ class TwigServiceProvider extends ServiceProvider
         $this->app->instance(TwigLoader::class, $twigLoader);
         $this->app->instance(TwigLoaderInterface::class, $twigLoader);
         $this->app->instance('twig.loader', $twigLoader);
+        $this->app->tag('twig.loader', ['twig.loader']);
 
         $twigTextLoader = $this->app->make(TwigTextLoader::class, ['paths' => $viewsPath]);
         $this->app->instance('twig.textLoader', $twigTextLoader);
+        $this->app->tag('twig.textLoader', ['twig.loader']);
 
         $cache = $this->app->get('path.cache.views');
         $twigDebug = false;
