@@ -20,6 +20,7 @@ use Twig\Environment as Twig;
 use Twig\Extension\AbstractExtension;
 use Twig\Extension\CoreExtension as TwigCore;
 use Twig\Extension\ExtensionInterface as ExtensionInterface;
+use Twig\Loader\FilesystemLoader;
 use Twig\Loader\LoaderInterface as TwigLoaderInterface;
 
 class TwigServiceProviderTest extends ServiceProviderTest
@@ -81,21 +82,25 @@ class TwigServiceProviderTest extends ServiceProviderTest
         $devExtension = $this->createMock(Develop::class);
         /** @var VarDumper|MockObject $dumper */
         $dumper = $this->createMock(VarDumper::class);
+        /** @var FilesystemLoader|MockObject $loader1 */
+        $loader1 = $this->createMock(FilesystemLoader::class);
+        $loader2 = (object) [];
 
-        $app = $this->getApp(['get', 'tagged', 'make']);
+        $this->app->instance('twig.environment', $twig);
+        $this->app->instance('twig.textEnvironment', $textTwig);
+        $this->app->instance('twig.extension.develop', $devExtension);
+        $this->app->instance('a', $firsExtension);
+        $this->app->instance('b', $secondExtension);
+        $this->app->tag(['a', 'b'], 'twig.extension');
+        $this->app->instance('no-dir', '/this-dir-should-not-exist');
+        $this->app->instance('other-dir', __DIR__ . '/Stub/');
+        $this->app->tag(['no-dir', 'other-dir'], 'plugin.path');
+        $this->app->singleton(VarDumper::class, fn () => $dumper);
+        $this->app->instance('l1', $loader1);
+        $this->app->instance('l2', $loader2);
+        $this->app->tag(['l1', 'l2'], 'twig.loader');
 
-        $app->expects($this->exactly(3))
-            ->method('get')
-            ->withConsecutive(['twig.environment'], ['twig.textEnvironment'], ['twig.extension.develop'])
-            ->willReturnOnConsecutiveCalls($twig, $textTwig, $devExtension);
-        $app->expects($this->once())
-            ->method('tagged')
-            ->with('twig.extension')
-            ->willReturn([$firsExtension, $secondExtension]);
-        $app->expects($this->once())
-            ->method('make')
-            ->with(VarDumper::class)
-            ->willReturn($dumper);
+        $this->setExpects($loader1, 'prependPath', [__DIR__ . '/Stub/views/']);
 
         $twig->expects($this->exactly(2))
             ->method('addExtension')
@@ -109,7 +114,7 @@ class TwigServiceProviderTest extends ServiceProviderTest
             ->method('setDumper')
             ->with($dumper);
 
-        $serviceProvider = new TwigServiceProvider($app);
+        $serviceProvider = new TwigServiceProvider($this->app);
         $serviceProvider->boot();
     }
 
@@ -150,8 +155,8 @@ class TwigServiceProviderTest extends ServiceProviderTest
         $app->expects($this->exactly(6))
             ->method('make')
             ->withConsecutive(
-                [TwigLoader::class, ['paths' => $viewsPath]],
-                [TwigTextLoader::class, ['paths' => $viewsPath]],
+                [TwigLoader::class, ['paths' => [$viewsPath, $viewsPath . '/..']]],
+                [TwigTextLoader::class, ['paths' => [$viewsPath, $viewsPath . '/..']]],
                 [Twig::class, ['options' => [
                     'cache'            => false,
                     'auto_reload'      => true,
@@ -190,14 +195,16 @@ class TwigServiceProviderTest extends ServiceProviderTest
                 ['renderer.twigTextEngine', $twigTextEngine],
             );
 
-        $app->expects($this->exactly(3))
+        $app->expects($this->exactly(4))
             ->method('get')
-            ->withConsecutive(['path.views'], ['config'], ['path.cache.views'])
-            ->willReturnOnConsecutiveCalls($viewsPath, $config, 'cache/views');
+            ->withConsecutive(['path.views'], ['path.views'], ['config'], ['path.cache.views'])
+            ->willReturnOnConsecutiveCalls($viewsPath, $viewsPath, $config, 'cache/views');
 
-        $app->expects($this->exactly(2))
+        $app->expects($this->exactly(4))
             ->method('tag')
             ->withConsecutive(
+                ['twig.loader', ['twig.loader']],
+                ['twig.textLoader', ['twig.loader']],
                 ['renderer.twigTextEngine', ['renderer.engine']], // Text goes first to catch .text.twig files
                 ['renderer.twigEngine', ['renderer.engine']],
             );
