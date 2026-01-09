@@ -13,8 +13,8 @@ abstract class Plugin
     protected string $path;
     protected string $namespace;
     protected string $namespacePath;
-    protected ?string $description;
     protected string $version;
+    protected ?string $description;
     protected string $license;
     protected ?string $homepage;
     protected array $authors;
@@ -32,8 +32,8 @@ abstract class Plugin
         $this->path = $pluginInfo['path'];
         $this->namespace = $pluginInfo['namespace'];
         $this->namespacePath = $pluginInfo['namespace_path'];
-        $this->description = $pluginInfo['description'] ?? null;
         $this->version = $pluginInfo['version'] ?? '0.0.0';
+        $this->description = $pluginInfo['description'] ?? null;
         $this->license = implode(', ', (array) ($pluginInfo['license'] ?? 'proprietary'));
         $this->homepage = $pluginInfo['homepage'] ?? null;
         $this->authors = $pluginInfo['authors'] ?? [];

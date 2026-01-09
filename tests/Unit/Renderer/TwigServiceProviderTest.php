@@ -84,7 +84,7 @@ class TwigServiceProviderTest extends ServiceProviderTest
         $dumper = $this->createMock(VarDumper::class);
         /** @var FilesystemLoader|MockObject $loader1 */
         $loader1 = $this->createMock(FilesystemLoader::class);
-        $loader2 = (object)[];
+        $loader2 = (object) [];
 
         $this->app->instance('twig.environment', $twig);
         $this->app->instance('twig.textEnvironment', $textTwig);

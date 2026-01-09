@@ -83,7 +83,7 @@ class PluginServiceProvider extends ServiceProvider
     {
         foreach ($autoload['psr-4'] ?? [] as $namespace => $path) {
             $namespace = rtrim($namespace, '\\') . '\\';
-            $path = $pluginPath . rtrim($path, '/') . '/';
+            $path = rtrim($pluginPath . $path, '/') . '/';
             return [$namespace, $path];
         }
 
