@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Engelsystem\Test\Unit\Renderer;
 
 use Engelsystem\Config\Config;
+use Engelsystem\Renderer\ExtendsTokenParser;
 use Engelsystem\Renderer\Twig\Extensions\Develop;
 use Engelsystem\Renderer\TwigEngine;
 use Engelsystem\Renderer\TwigLoader;
@@ -147,12 +148,14 @@ class TwigServiceProviderTest extends ServiceProviderTest
         $twigText = $this->createMock(Twig::class);
         /** @var TwigEngine|MockObject $twigTextEngine */
         $twigTextEngine = $this->createMock(TwigEngine::class);
+        /** @var ExtendsTokenParser|MockObject $extendsTokenParser */
+        $extendsTokenParser = $this->createMock(ExtendsTokenParser::class);
 
         $app = $this->getApp(['make', 'instance', 'tag', 'get']);
 
         $viewsPath = __DIR__ . '/Stub';
 
-        $app->expects($this->exactly(6))
+        $app->expects($this->exactly(7))
             ->method('make')
             ->withConsecutive(
                 [TwigLoader::class, ['paths' => [$viewsPath, $viewsPath . '/..']]],
@@ -171,20 +174,23 @@ class TwigServiceProviderTest extends ServiceProviderTest
                     'debug'            => true,
                     'autoescape'       => false,
                 ]]],
-                [TwigEngine::class, ['twig' => $twigText]]
+                [TwigEngine::class, ['twig' => $twigText]],
+                [ExtendsTokenParser::class],
             )->willReturnOnConsecutiveCalls(
                 $twigLoader,
                 $twigTextLoader,
                 $twig,
                 $twigEngine,
                 $twigText,
-                $twigTextEngine
+                $twigTextEngine,
+                $extendsTokenParser,
             );
 
-        $app->expects($this->exactly(9))
+        $app->expects($this->exactly(10))
             ->method('instance')
             ->withConsecutive(
                 [TwigLoader::class, $twigLoader],
+                [FilesystemLoader::class, $twigLoader],
                 [TwigLoaderInterface::class, $twigLoader],
                 ['twig.loader', $twigLoader],
                 ['twig.textLoader', $twigTextLoader],
@@ -195,10 +201,10 @@ class TwigServiceProviderTest extends ServiceProviderTest
                 ['renderer.twigTextEngine', $twigTextEngine],
             );
 
-        $app->expects($this->exactly(4))
+        $app->expects($this->exactly(5))
             ->method('get')
-            ->withConsecutive(['path.views'], ['path.views'], ['config'], ['path.cache.views'])
-            ->willReturnOnConsecutiveCalls($viewsPath, $viewsPath, $config, 'cache/views');
+            ->withConsecutive(['path.views'], ['path.views'], ['config'], ['path.cache.views'], ['path.resources'])
+            ->willReturnOnConsecutiveCalls($viewsPath, $viewsPath, $config, 'cache/views', '/resources');
 
         $app->expects($this->exactly(4))
             ->method('tag')
@@ -218,6 +224,10 @@ class TwigServiceProviderTest extends ServiceProviderTest
             ->method('getExtension')
             ->with(TwigCore::class)
             ->willReturn($twigCore);
+
+        $twig->expects($this->once())
+            ->method('addTokenParser')
+            ->with($extendsTokenParser);
 
         $twigCore->expects($this->once())
             ->method('setTimezone')

@@ -102,6 +102,7 @@ class TwigServiceProvider extends ServiceProvider
 
         $twigLoader = $this->app->make(TwigLoader::class, ['paths' => $viewsPath]);
         $this->app->instance(TwigLoader::class, $twigLoader);
+        $this->app->instance(FilesystemLoader::class, $twigLoader);
         $this->app->instance(TwigLoaderInterface::class, $twigLoader);
         $this->app->instance('twig.loader', $twigLoader);
         $this->app->tag('twig.loader', ['twig.loader']);
@@ -148,6 +149,13 @@ class TwigServiceProvider extends ServiceProvider
         // Text is tagged first to catch .text.twig files
         $this->app->tag('renderer.twigTextEngine', ['renderer.engine']);
         $this->app->tag('renderer.twigEngine', ['renderer.engine']);
+
+        // Add token parsers
+        $extendsTokenParser = $this->app->make(
+            ExtendsTokenParser::class,
+            ['basePath' => $this->app->get('path.resources')],
+        );
+        $twig->addTokenParser($extendsTokenParser);
     }
 
     protected function registerTwigExtensions(string $class, string $alias): void
