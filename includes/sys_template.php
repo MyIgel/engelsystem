@@ -160,9 +160,9 @@ function heading($content, $number = 1)
  * @param string[] $items
  * @return string
  */
-function toolbar_pills($items)
+function toolbar_pills($items, $class = '')
 {
-    return '<ul class="nav nav-pills">' . join("\n", $items) . '</ul>';
+    return '<ul class="nav nav-pills ' . $class . '">' . join("\n", $items) . '</ul>';
 }
 
 /**
