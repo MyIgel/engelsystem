@@ -33,7 +33,7 @@ function location_controller(): array
     }
 
     $shiftsFilter = new ShiftsFilter(
-        true,
+        $request->get('showFilledShifts', true),
         [$location->id],
         AngelType::query()->get('id')->pluck('id')->toArray()
     );
