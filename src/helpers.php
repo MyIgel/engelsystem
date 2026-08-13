@@ -101,13 +101,13 @@ function env_secret(string $var, mixed $default = null): string | null
     return env($var, $default);
 }
 
-function event(string|object|null $event = null, array $payload = []): mixed
+function event(object|null $event = null): mixed
 {
     /** @var EventDispatcher $dispatcher */
     $dispatcher = app('events.dispatcher');
 
     if (!is_null($event)) {
-        return $dispatcher->dispatch($event, $payload);
+        return $dispatcher->dispatch($event);
     }
 
     return $dispatcher;

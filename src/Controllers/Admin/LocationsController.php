@@ -6,6 +6,7 @@ namespace Engelsystem\Controllers\Admin;
 
 use Engelsystem\Controllers\BaseController;
 use Engelsystem\Controllers\HasUserNotifications;
+use Engelsystem\Events\DataEvent;
 use Engelsystem\Http\Exceptions\ValidationException;
 use Engelsystem\Http\Redirector;
 use Engelsystem\Http\Request;
@@ -129,7 +130,7 @@ class LocationsController extends BaseController
 
         $shifts = $location->shifts;
         foreach ($shifts as $shift) {
-            event('shift.deleting', ['shift' => $shift]);
+            event(new DataEvent('shift.deleting', ['shift' => $shift]));
         }
         $location->delete();
 

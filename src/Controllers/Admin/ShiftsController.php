@@ -6,6 +6,7 @@ namespace Engelsystem\Controllers\Admin;
 
 use Engelsystem\Controllers\BaseController;
 use Engelsystem\Controllers\HasUserNotifications;
+use Engelsystem\Events\DataEvent;
 use Engelsystem\Http\Redirector;
 use Engelsystem\Http\Request;
 use Engelsystem\Http\Response;
@@ -65,7 +66,7 @@ class ShiftsController extends BaseController
         );
 
         foreach ($shifts as $shift) {
-            event('shift.deleting', ['shift' => $shift]);
+            event(new DataEvent('shift.deleting', ['shift' => $shift]));
             $shift->delete();
 
             $this->log->info(

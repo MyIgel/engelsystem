@@ -7,6 +7,7 @@ namespace Engelsystem\Controllers\Admin;
 use Engelsystem\Controllers\BaseController;
 use Engelsystem\Controllers\HasUserNotifications;
 use Engelsystem\Controllers\NotificationType;
+use Engelsystem\Events\DataEvent;
 use Engelsystem\Helpers\Carbon;
 use Engelsystem\Helpers\Schedule\ConferenceTrack;
 use Engelsystem\Helpers\Schedule\Event;
@@ -299,7 +300,7 @@ class ScheduleController extends BaseController
             ->get();
 
         foreach ($scheduleShifts as $scheduleShift) {
-            event('shift.deleting', ['shift' => $scheduleShift->shift]);
+            event(new DataEvent('shift.deleting', ['shift' => $scheduleShift->shift]));
         }
     }
 
@@ -399,10 +400,10 @@ class ScheduleController extends BaseController
 
     protected function fireUpdateShiftUpdateEvent(Shift $oldShift, Shift $newShift): void
     {
-        event('shift.updating', [
+        event(new DataEvent('shift.updating', [
             'shift' => $newShift,
             'oldShift' => $oldShift,
-        ]);
+        ]));
     }
 
     /**

@@ -4,26 +4,30 @@ declare(strict_types=1);
 
 namespace Engelsystem\Events\Listener;
 
+use Engelsystem\Events\Events\MessageCreated;
 use Engelsystem\Mail\EngelsystemMailer;
 use Engelsystem\Models\Message;
 use Engelsystem\Models\User\User;
-use Psr\Log\LoggerInterface;
 
 class Messages
 {
     public function __construct(
-        protected LoggerInterface $log,
         protected EngelsystemMailer $mailer
     ) {
     }
 
-    public function created(Message $message): void
+    public function created(MessageCreated $event): void
     {
-        if (!$message->receiver->settings->email_messages) {
+        if (!$event->message->receiver->settings->email_messages) {
             return;
         }
 
-        $this->sendMail($message, $message->receiver, 'notification.messages.new', 'emails/messages-new');
+        $this->sendMail(
+            $event->message,
+            $event->message->receiver,
+            'notification.messages.new',
+            'emails/messages-new',
+        );
     }
 
     private function sendMail(Message $message, User $user, string $subject, string $template): void

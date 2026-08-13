@@ -1,5 +1,6 @@
 <?php
 
+use Engelsystem\Events\DataEvent;
 use Engelsystem\Http\Exceptions\HttpForbidden;
 use Engelsystem\Http\Exceptions\HttpNotFound;
 use Engelsystem\Http\Redirector;
@@ -161,10 +162,10 @@ function shift_edit_controller()
             $shift->updatedBy()->associate(auth()->user());
             $shift->save();
 
-            event('shift.updating', [
+            event(new DataEvent('shift.updating', [
                 'shift' => $shift,
                 'oldShift' => $oldShift,
-            ]);
+            ]));
 
             NeededAngelType::whereShiftId($shift_id)->delete();
             $needed_angel_types_info = [];
@@ -295,7 +296,7 @@ function shift_delete_controller(): void
     /** @var Shift $shift */
     $shift = Shift::findOrFail($shift_id);
 
-    event('shift.deleting', ['shift' => $shift]);
+    event(new DataEvent('shift.deleting', ['shift' => $shift]));
 
     $shift->delete();
 
