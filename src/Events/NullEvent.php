@@ -8,8 +8,7 @@ namespace Engelsystem\Events;
  */
 class NullEvent extends Event
 {
-    public function __construct(?string $name = null)
+    public function __construct(protected ?string $name = null)
     {
-        $this->name = $name;
     }
 }

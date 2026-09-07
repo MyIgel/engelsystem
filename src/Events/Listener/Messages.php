@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Engelsystem\Events\Listener;
 
-use Engelsystem\Events\Events\MessageCreated;
+use Engelsystem\Events\Message as MessageEvent;
 use Engelsystem\Mail\EngelsystemMailer;
 use Engelsystem\Models\Message;
 use Engelsystem\Models\User\User;
@@ -16,7 +16,7 @@ class Messages
     ) {
     }
 
-    public function created(MessageCreated $event): void
+    public function created(MessageEvent $event): void
     {
         if (!$event->message->receiver->settings->email_messages) {
             return;

@@ -53,7 +53,7 @@ class EventDispatcher implements EventDispatcherInterface
                 $listener = $listener . '@handle';
             }
 
-            app()->call($listener, [$event]);
+            app()->call($listener, ['event' => $event]);
         }
 
         return $event;

@@ -2,25 +2,21 @@
 
 namespace Engelsystem\Events;
 
+use Illuminate\Support\Collection;
 
 /**
  * Used when basic data is used
- * @deprecated
  */
 class DataEvent extends Event
 {
-    public function __construct(string $name, protected array $data)
-    {
-        $this->name = $name;
-    }
+    public Collection $data;
 
-    public function getData(): array
+    public function __construct(protected string $name, array|Collection $data)
     {
-        return $this->data;
-    }
+        if (!$data instanceof Collection) {
+            $data = Collection::make($data);
+        }
 
-    public function setData(array $data): void
-    {
         $this->data = $data;
     }
 }

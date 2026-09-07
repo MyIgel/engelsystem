@@ -72,6 +72,7 @@ return [
     ],
 
     // Event handlers
+    // ToDO: Update handlers to handle Event instances
     'event-handlers' => [
         // 'event' => [
         //      a list of
