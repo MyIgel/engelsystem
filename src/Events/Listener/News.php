@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Engelsystem\Events\Listener;
 
+use Engelsystem\Events\DataEvent;
 use Engelsystem\Mail\EngelsystemMailer;
 use Engelsystem\Models\News as NewsModel;
 use Engelsystem\Models\User\Settings as UserSettings;
@@ -19,14 +20,24 @@ class News
     ) {
     }
 
-    public function created(NewsModel $news, bool $sendNotification = true): void
+    public function created(DataEvent $event): void
     {
-        $this->sendMail($news, 'notification.news.new', 'emails/news-new', $sendNotification);
+        $this->sendMail(
+            $event->data['news'],
+            'notification.news.new',
+            'emails/news-new',
+            $event->data['sendNotification'],
+        );
     }
 
-    public function updated(NewsModel $news, bool $sendNotification = true): void
+    public function updated(DataEvent $event): void
     {
-        $this->sendMail($news, 'notification.news.updated', 'emails/news-updated', $sendNotification);
+        $this->sendMail(
+            $event->data['news'],
+            'notification.news.updated',
+            'emails/news-updated',
+            $event->data['sendNotification'],
+        );
     }
 
     protected function sendMail(NewsModel $news, string $subject, string $template, bool $sendNotification = true): void

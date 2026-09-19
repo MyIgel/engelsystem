@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Engelsystem\Events\Listener;
 
 use Carbon\Carbon;
+use Engelsystem\Events\DataEvent;
 use Engelsystem\Mail\EngelsystemMailer;
 use Engelsystem\Models\Shifts\Shift;
 use Engelsystem\Models\Shifts\ShiftEntry;
@@ -21,8 +22,11 @@ class Shifts
     ) {
     }
 
-    public function deletingCreateWorklogs(Shift $shift): void
+    public function deletingCreateWorklogs(DataEvent $event): void
     {
+        /** @var Shift $shift */
+        $shift = $event->data['shift'];
+
         foreach ($shift->shiftEntries as $entry) {
             if ($entry->freeloaded_by || $shift->start > Carbon::now()) {
                 continue;
@@ -53,8 +57,11 @@ class Shifts
         }
     }
 
-    public function deletingSendEmails(Shift $shift): void
+    public function deletingSendEmails(DataEvent $event): void
     {
+        /** @var Shift $shift */
+        $shift = $event->data['shift'];
+
         foreach ($shift->shiftEntries as $entry) {
             if (!$entry->user->settings->email_shiftinfo) {
                 continue;
@@ -73,8 +80,13 @@ class Shifts
         }
     }
 
-    public function updatedSendEmail(Shift $shift, Shift $oldShift): void
+    public function updatedSendEmail(DataEvent $event): void
     {
+        /** @var Shift $shift */
+        $shift = $event->data['shift'];
+        /** @var Shift $oldShift */
+        $oldShift = $event->data['oldShift'];
+
         // Only send e-mail on relevant changes
         if (
             $oldShift->shift_type_id == $shift->shift_type_id
