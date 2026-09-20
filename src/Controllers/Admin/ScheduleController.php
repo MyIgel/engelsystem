@@ -300,7 +300,7 @@ class ScheduleController extends BaseController
             ->get();
 
         foreach ($scheduleShifts as $scheduleShift) {
-            event(new DataEvent('shift.deleting', ['shift' => $scheduleShift->shift]));
+            $scheduleShift->shift->delete();
         }
     }
 
@@ -348,7 +348,6 @@ class ScheduleController extends BaseController
         /** @var ScheduleShift $scheduleShift */
         $scheduleShift = ScheduleShift::whereGuid($event->getGuid())->where('schedule_id', $schedule->id)->first();
         $shift = $scheduleShift->shift;
-        $oldShift = Shift::find($shift->id);
         $shift->title = $event->getTitle();
         $shift->shift_type_id = $shiftTypeId;
         $shift->start = $event->getDate()->copy()->timezone($eventTimeZone);
@@ -357,8 +356,6 @@ class ScheduleController extends BaseController
         $shift->url = $event->getUrl() ?? '';
         $shift->updatedBy()->associate($user);
         $shift->save();
-
-        $this->fireUpdateShiftUpdateEvent($oldShift, $shift);
 
         $this->log->info(
             'Updated schedule ({schedule}) shift: {shifttype} with title '
@@ -396,14 +393,6 @@ class ScheduleController extends BaseController
                 'guid' => $scheduleShift->guid,
             ]
         );
-    }
-
-    protected function fireUpdateShiftUpdateEvent(Shift $oldShift, Shift $newShift): void
-    {
-        event(new DataEvent('shift.updating', [
-            'shift' => $newShift,
-            'oldShift' => $oldShift,
-        ]));
     }
 
     /**

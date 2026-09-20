@@ -7,7 +7,7 @@ use Illuminate\Support\Collection;
 /**
  * Used when basic data is used
  */
-class DataEvent extends Event
+class DataEvent extends StoppableEvent
 {
     use DataStore;
 

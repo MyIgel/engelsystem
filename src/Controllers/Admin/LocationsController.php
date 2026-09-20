@@ -130,7 +130,7 @@ class LocationsController extends BaseController
 
         $shifts = $location->shifts;
         foreach ($shifts as $shift) {
-            event(new DataEvent('shift.deleting', ['shift' => $shift]));
+            $shift->delete();
         }
         $location->delete();
 

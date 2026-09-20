@@ -806,8 +806,7 @@ function User_view(
                         event(new DataEvent(
                             'user_view_me_buttons',
                             ['user' => $user_source, 'content' => ''],
-                        ))
-                            ->data['content'],
+                        ))->data['content'],
                         button(
                             url('/settings/profile'),
                             icon('person-fill-gear') . __('settings.settings')

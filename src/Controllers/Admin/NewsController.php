@@ -8,6 +8,7 @@ use Engelsystem\Controllers\BaseController;
 use Engelsystem\Controllers\HasUserNotifications;
 use Engelsystem\Controllers\NotificationType;
 use Engelsystem\Events\DataEvent;
+use Engelsystem\Events\NewsEvent;
 use Engelsystem\Helpers\Authenticator;
 use Engelsystem\Http\Redirector;
 use Engelsystem\Http\Request;
@@ -110,9 +111,10 @@ class NewsController extends BaseController
         }
         $news->save();
 
-        event(new DataEvent(
+        event(new NewsEvent(
             $isNewNews ? 'news.created' : 'news.updated',
-            ['news' => $news, 'sendNotification' => $notify],
+            $news,
+            $notify,
         ));
 
         $this->log->info(

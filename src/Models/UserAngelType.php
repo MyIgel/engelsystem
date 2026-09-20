@@ -9,6 +9,7 @@ use Engelsystem\Models\User\UsesUserModel;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\Concerns\AsPivot;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 
@@ -29,10 +30,13 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
  * @method static QueryBuilder|UserAngelType[] whereConfirmUserId($value)
  * @method static QueryBuilder|UserAngelType[] whereSupporter($value)
  */
-class UserAngelType extends Pivot
+class UserAngelType extends BaseModel
 {
+    use AsPivot;
     use HasFactory;
     use UsesUserModel;
+
+    protected $guarded = [];
 
     /** @var bool Increment the IDs */
     public $incrementing = true; // phpcs:ignore

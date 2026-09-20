@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Engelsystem\Controllers;
 
 use Engelsystem\Database\Database;
-use Engelsystem\Events\Message as MessageEvent;
 use Engelsystem\Helpers\Authenticator;
 use Engelsystem\Http\Exceptions\HttpForbidden;
 use Engelsystem\Http\Redirector;
@@ -151,8 +150,6 @@ class MessagesController extends BaseController
         $newMessage->text = $data['text'];
         $newMessage->read = $otherUser->id == $currentUser->id; // if its to myself, I obviously read it.
         $newMessage->save();
-
-        event(new MessageEvent(MessageEvent::$CREATED, $newMessage));
 
         return $this->redirect->to('/messages/' . $otherUser->id . '#newest');
     }

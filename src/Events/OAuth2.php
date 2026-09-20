@@ -4,7 +4,7 @@ namespace Engelsystem\Events;
 
 use Illuminate\Support\Collection;
 
-class OAuth2 extends Event
+class OAuth2 extends StoppableEvent
 {
     public static string $LOGIN = 'oauth2.login';
 

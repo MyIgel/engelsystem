@@ -162,11 +162,6 @@ function shift_edit_controller()
             $shift->updatedBy()->associate(auth()->user());
             $shift->save();
 
-            event(new DataEvent('shift.updating', [
-                'shift' => $shift,
-                'oldShift' => $oldShift,
-            ]));
-
             NeededAngelType::whereShiftId($shift_id)->delete();
             $needed_angel_types_info = [];
             foreach ($needed_angel_types as $type_id => $count) {
@@ -295,8 +290,6 @@ function shift_delete_controller(): void
     $shift_id = $request->input('delete_shift');
     /** @var Shift $shift */
     $shift = Shift::findOrFail($shift_id);
-
-    event(new DataEvent('shift.deleting', ['shift' => $shift]));
 
     $shift->delete();
 

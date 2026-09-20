@@ -25,7 +25,7 @@ use Psr\Log\Test\TestLogger;
 #[CoversMethod(Shifts::class, 'deletingCreateWorklogs')]
 #[CoversMethod(Shifts::class, '__construct')]
 #[CoversMethod(Shifts::class, 'deletingSendEmails')]
-#[CoversMethod(Shifts::class, 'updatedSendEmail')]
+#[CoversMethod(Shifts::class, 'updatingSendEmail')]
 #[AllowMockObjectsWithoutExpectations]
 class ShiftsTest extends TestCase
 {
@@ -129,7 +129,7 @@ class ShiftsTest extends TestCase
 
         /** @var Shifts $listener */
         $listener = $this->app->make(Shifts::class);
-        $listener->updatedSendEmail($this->shift, $oldShift);
+        $listener->UpdatedSendEmail($this->shift, $oldShift);
     }
 
     public function testUpdatedSendEmailNoNotification(): void
@@ -144,7 +144,7 @@ class ShiftsTest extends TestCase
 
         /** @var Shifts $listener */
         $listener = $this->app->make(Shifts::class);
-        $listener->updatedSendEmail($this->shift, $oldShift);
+        $listener->UpdatedSendEmail($this->shift, $oldShift);
     }
 
     public function testUpdatedSendEmailAlreadyEnded(): void
@@ -157,7 +157,7 @@ class ShiftsTest extends TestCase
 
         /** @var Shifts $listener */
         $listener = $this->app->make(Shifts::class);
-        $listener->updatedSendEmail($this->shift, $oldShift);
+        $listener->UpdatedSendEmail($this->shift, $oldShift);
     }
 
     public function testUpdatedSendEmail(): void
@@ -186,7 +186,7 @@ class ShiftsTest extends TestCase
 
         /** @var Shifts $listener */
         $listener = $this->app->make(Shifts::class);
-        $listener->updatedSendEmail($this->shift, $oldShift);
+        $listener->UpdatedSendEmail($this->shift, $oldShift);
     }
 
     protected function setUp(): void

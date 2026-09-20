@@ -53,7 +53,6 @@ use PHPUnit\Framework\MockObject\MockObject;
 #[CoversMethod(ScheduleController::class, 'getScheduleShiftsByGuid')]
 #[CoversMethod(ScheduleController::class, 'getScheduleShiftsWhereNotGuid')]
 #[CoversMethod(ScheduleController::class, 'eventFromScheduleShift')]
-#[CoversMethod(ScheduleController::class, 'fireUpdateShiftUpdateEvent')]
 #[CoversMethod(ScheduleController::class, 'getAllLocations')]
 #[CoversMethod(ScheduleController::class, 'createLocation')]
 #[CoversMethod(ScheduleController::class, 'createEvent')]

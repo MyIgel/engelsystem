@@ -72,8 +72,8 @@ return [
     ],
 
     // Event handlers
-    // ToDO: Update handlers to handle Event instances
     'event-handlers' => [
+        // event names can contain * wildcards
         // 'event' => [
         //      a list of
         //      'Class@method' or 'Class' (which uses @handle),
@@ -82,21 +82,23 @@ return [
         //      or $function
         // ]
 
-        'message.created' => \Engelsystem\Events\Listener\Messages::class . '@created',
+        'eloquent.*' => \Engelsystem\Events\Listener\Eloquent::class,
+
+        'model.message.created' => \Engelsystem\Events\Listener\Messages::class . '@created',
 
         'news.created' => \Engelsystem\Events\Listener\News::class . '@created',
         'news.updated' => \Engelsystem\Events\Listener\News::class . '@updated',
 
         'oauth2.login' => \Engelsystem\Events\Listener\OAuth2::class . '@login',
 
-        'shift.deleting' => [
+        'model.shifts.shift.deleting' => [
             \Engelsystem\Events\Listener\Shifts::class . '@deletingCreateWorklogs',
             \Engelsystem\Events\Listener\Shifts::class . '@deletingSendEmails',
         ],
 
-        'shift.updating' => \Engelsystem\Events\Listener\Shifts::class . '@updatedSendEmail',
+        'model.shifts.shift.updating' => \Engelsystem\Events\Listener\Shifts::class . '@updatingSendEmail',
 
-        'user.created' => \Engelsystem\Events\Listener\Users::class . '@created',
+        'model.user.user.created' => \Engelsystem\Events\Listener\Users::class . '@created',
     ],
 
     'config_options' => [

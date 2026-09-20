@@ -66,7 +66,6 @@ class ShiftsController extends BaseController
         );
 
         foreach ($shifts as $shift) {
-            event(new DataEvent('shift.deleting', ['shift' => $shift]));
             $shift->delete();
 
             $this->log->info(

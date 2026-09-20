@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Engelsystem\Events\Listener;
 
-use Engelsystem\Events\DataEvent;
+use Engelsystem\Events\NewsEvent;
 use Engelsystem\Mail\EngelsystemMailer;
 use Engelsystem\Models\News as NewsModel;
 use Engelsystem\Models\User\Settings as UserSettings;
@@ -20,7 +20,7 @@ class News
     ) {
     }
 
-    public function created(DataEvent $event): void
+    public function created(NewsEvent $event): void
     {
         $this->sendMail(
             $event->news,
@@ -30,7 +30,7 @@ class News
         );
     }
 
-    public function updated(DataEvent $event): void
+    public function updated(NewsEvent $event): void
     {
         $this->sendMail(
             $event->news,

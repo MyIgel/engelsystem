@@ -310,8 +310,6 @@ class User
 
         $this->dbConnection->commit();
 
-        event(new DataEvent('user.created', ['user' => $user]));
-
         return $user;
     }
 

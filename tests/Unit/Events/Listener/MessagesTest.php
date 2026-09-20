@@ -6,7 +6,7 @@ namespace Engelsystem\Test\Unit\Events\Listener;
 
 use Engelsystem\Config\Config;
 use Engelsystem\Events\Listener\Messages;
-use Engelsystem\Events\Message as MessageEvent;
+use Engelsystem\Events\ModelEvent;
 use Engelsystem\Mail\EngelsystemMailer;
 use Engelsystem\Models\Message;
 use Engelsystem\Models\User\Settings;
@@ -51,7 +51,7 @@ class MessagesTest extends TestCase
             });
 
         $handler = new Messages($mailer);
-        $handler->created(new MessageEvent(MessageEvent::$CREATED, $message));
+        $handler->created(new ModelEvent('model.message.created', $message));
     }
 
     public function testCreatedNoEmail(): void
@@ -67,7 +67,7 @@ class MessagesTest extends TestCase
         $mailer->expects($this->never())->method('sendViewTranslated');
 
         $handler = new Messages($mailer);
-        $handler->created(new MessageEvent(MessageEvent::$CREATED, $message));
+        $handler->created(new ModelEvent('model.message.created', $message));
     }
 
     protected function setUp(): void

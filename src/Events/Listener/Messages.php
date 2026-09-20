@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Engelsystem\Events\Listener;
 
-use Engelsystem\Events\Message as MessageEvent;
+use Engelsystem\Events\ModelEvent;
 use Engelsystem\Mail\EngelsystemMailer;
 use Engelsystem\Models\Message;
 use Engelsystem\Models\User\User;
@@ -16,15 +16,17 @@ class Messages
     ) {
     }
 
-    public function created(MessageEvent $event): void
+    public function created(ModelEvent $event): void
     {
-        if (!$event->message->receiver->settings->email_messages) {
+        /** @var Message $model */
+        $model = $event->model;
+        if (!$model->receiver->settings->email_messages) {
             return;
         }
 
         $this->sendMail(
-            $event->message,
-            $event->message->receiver,
+            $model,
+            $model->receiver,
             'notification.messages.new',
             'emails/messages-new',
         );

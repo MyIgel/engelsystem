@@ -11,12 +11,18 @@ use Psr\EventDispatcher\StoppableEventInterface;
 class EventDispatcher implements EventDispatcherInterface
 {
     /** @var callable[] */
-    protected array $listeners;
+    protected array $listeners = [];
+    /** @var callable[] */
+    protected array $wildcards = [];
 
     public function listen(array|string $events, callable|string $listener): void
     {
         foreach ((array)$events as $event) {
-            $this->listeners[$event][] = $listener;
+            if (Str::contains($event, '*')) {
+                $this->wildcards[$event][] = $listener;
+            } else {
+                $this->listeners[$event][] = $listener;
+            }
         }
     }
 
@@ -43,9 +49,16 @@ class EventDispatcher implements EventDispatcherInterface
         if (isset($this->listeners[$name])) {
             $listeners = $this->listeners[$name];
         }
+        foreach ($this->wildcards as $key => $wildcardListeners) {
+            if (!Str::is($key, $name)) {
+                continue;
+            }
+
+            $listeners = array_merge($listeners, $wildcardListeners);
+        }
 
         foreach ($listeners as $listener) {
-            if($isStoppable && $event->isPropagationStopped()) {
+            if ($isStoppable && $event->isPropagationStopped()) {
                 return $event;
             }
 
