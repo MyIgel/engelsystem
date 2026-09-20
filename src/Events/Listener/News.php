@@ -22,22 +22,12 @@ class News
 
     public function created(NewsEvent $event): void
     {
-        $this->sendMail(
-            $event->news,
-            'notification.news.new',
-            'emails/news-new',
-            $event->sendNotification,
-        );
+        $this->sendMail($event->news, 'notification.news.new', 'emails/news-new', $event->sendNotification);
     }
 
     public function updated(NewsEvent $event): void
     {
-        $this->sendMail(
-            $event->news,
-            'notification.news.updated',
-            'emails/news-updated',
-            $event->sendNotification,
-        );
+        $this->sendMail($event->news, 'notification.news.updated', 'emails/news-updated', $event->sendNotification);
     }
 
     protected function sendMail(NewsModel $news, string $subject, string $template, bool $sendNotification = true): void

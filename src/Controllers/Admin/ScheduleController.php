@@ -292,7 +292,7 @@ class ScheduleController extends BaseController
         $this->log->info('Created schedule location "{location}"', ['location' => $room->getName()]);
     }
 
-    protected function fireDeleteShiftEvents(Event $event, ScheduleModel $schedule): void
+    protected function deleteScheduleShifts(Event $event, ScheduleModel $schedule): void
     {
         /** @var DatabaseCollection|ScheduleShift[] $scheduleShifts */
         $scheduleShifts = ScheduleShift::where('guid', $event->getGuid())
@@ -300,6 +300,7 @@ class ScheduleController extends BaseController
             ->get();
 
         foreach ($scheduleShifts as $scheduleShift) {
+            // Manually delete to fire events
             $scheduleShift->shift->delete();
         }
     }
@@ -378,7 +379,8 @@ class ScheduleController extends BaseController
         $scheduleShift = ScheduleShift::whereGuid($event->getGuid())->where('schedule_id', $schedule->id)->first();
         $shift = $scheduleShift->shift;
 
-        $this->fireDeleteShiftEvents($event, $schedule);
+        // TODO?
+        $this->deleteScheduleShifts($event, $schedule);
         $shift->delete();
         $scheduleShift->delete();
 

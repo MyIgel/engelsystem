@@ -196,6 +196,7 @@ class ShiftTypesController extends BaseController
 
         $shifts = $shiftType->shifts;
         foreach ($shifts as $shift) {
+            // Manually delete to fire events
             $shift->delete();
         }
         $shiftType->delete();

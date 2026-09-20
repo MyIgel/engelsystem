@@ -18,18 +18,13 @@ class Messages
 
     public function created(ModelEvent $event): void
     {
-        /** @var Message $model */
-        $model = $event->model;
-        if (!$model->receiver->settings->email_messages) {
+        /** @var Message $message */
+        $message = $event->model;
+        if (!$message->receiver->settings->email_messages) {
             return;
         }
 
-        $this->sendMail(
-            $model,
-            $model->receiver,
-            'notification.messages.new',
-            'emails/messages-new',
-        );
+        $this->sendMail($message, $message->receiver, 'notification.messages.new', 'emails/messages-new');
     }
 
     private function sendMail(Message $message, User $user, string $subject, string $template): void
