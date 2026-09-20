@@ -25,7 +25,7 @@ class Shifts
     public function deletingCreateWorklogs(DataEvent $event): void
     {
         /** @var Shift $shift */
-        $shift = $event->data['shift'];
+        $shift = $event->shift;
 
         foreach ($shift->shiftEntries as $entry) {
             if ($entry->freeloaded_by || $shift->start > Carbon::now()) {
@@ -60,7 +60,7 @@ class Shifts
     public function deletingSendEmails(DataEvent $event): void
     {
         /** @var Shift $shift */
-        $shift = $event->data['shift'];
+        $shift = $event->shift;
 
         foreach ($shift->shiftEntries as $entry) {
             if (!$entry->user->settings->email_shiftinfo) {
@@ -83,9 +83,9 @@ class Shifts
     public function updatedSendEmail(DataEvent $event): void
     {
         /** @var Shift $shift */
-        $shift = $event->data['shift'];
+        $shift = $event->shift;
         /** @var Shift $oldShift */
-        $oldShift = $event->data['oldShift'];
+        $oldShift = $event->oldShift;
 
         // Only send e-mail on relevant changes
         if (

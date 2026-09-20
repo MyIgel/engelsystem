@@ -23,20 +23,20 @@ class News
     public function created(DataEvent $event): void
     {
         $this->sendMail(
-            $event->data['news'],
+            $event->news,
             'notification.news.new',
             'emails/news-new',
-            $event->data['sendNotification'],
+            $event->sendNotification,
         );
     }
 
     public function updated(DataEvent $event): void
     {
         $this->sendMail(
-            $event->data['news'],
+            $event->news,
             'notification.news.updated',
             'emails/news-updated',
-            $event->data['sendNotification'],
+            $event->sendNotification,
         );
     }
 

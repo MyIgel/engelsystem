@@ -9,7 +9,7 @@ use Illuminate\Support\Collection;
  */
 class DataEvent extends Event
 {
-    public Collection $data;
+    use DataStore;
 
     public function __construct(protected string $name, array|Collection $data)
     {
