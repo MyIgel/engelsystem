@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Engelsystem\Events\Listener;
 
 use Engelsystem\Events\DataEvent;
-use Engelsystem\Events\ModelEvent;
 use Engelsystem\Mail\EngelsystemMailer;
 use Engelsystem\Models\User\User;
 use Psr\Log\LoggerInterface;

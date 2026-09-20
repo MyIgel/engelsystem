@@ -1,7 +1,8 @@
 <?php
 
-namespace Engelsystem\Events;
+declare(strict_types=1);
 
+namespace Engelsystem\Events;
 
 /**
  * Empty event, used when no data is needed

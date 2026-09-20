@@ -16,26 +16,41 @@ class LaravelEventDispatcher implements Dispatcher
     {
     }
 
+    /**
+     * @inheritdoc
+     */
     public function listen($events, $listener = null): void
     {
         $this->dispatcher->listen($events, $listener);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function hasListeners($eventName): bool
     {
         throw new ErrorException('hasListeners is not implemented');
     }
 
+    /**
+     * @inheritdoc
+     */
     public function subscribe($subscriber): void
     {
         throw new ErrorException('subscribe is not implemented');
     }
 
+    /**
+     * @inheritdoc
+     */
     public function until($event, $payload = []): mixed
     {
         return $this->dispatch($event, $payload, true);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function dispatch($event, $payload = [], $halt = false): array|null
     {
         if (is_string($event)) {
@@ -50,16 +65,25 @@ class LaravelEventDispatcher implements Dispatcher
         return $halt ? null : [$ret];
     }
 
+    /**
+     * @inheritdoc
+     */
     public function push($event, $payload = []): void
     {
         throw new ErrorException('push is not implemented');
     }
 
+    /**
+     * @inheritdoc
+     */
     public function flush($event): void
     {
         throw new ErrorException('flush is not implemented');
     }
 
+    /**
+     * @inheritdoc
+     */
     public function forget($event): void
     {
         $this->dispatcher->forget($event);

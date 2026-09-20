@@ -7,7 +7,6 @@ namespace Engelsystem\Controllers\Admin;
 use Engelsystem\Controllers\BaseController;
 use Engelsystem\Controllers\HasUserNotifications;
 use Engelsystem\Controllers\NotificationType;
-use Engelsystem\Events\DataEvent;
 use Engelsystem\Helpers\Carbon;
 use Engelsystem\Helpers\Schedule\ConferenceTrack;
 use Engelsystem\Helpers\Schedule\Event;

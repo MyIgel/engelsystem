@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\Concerns\AsPivot;
-use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 
 /**
@@ -36,7 +35,8 @@ class UserAngelType extends BaseModel
     use HasFactory;
     use UsesUserModel;
 
-    protected $guarded = [];
+    /** @var array */
+    protected $guarded = []; // phpcs:ignore
 
     /** @var bool Increment the IDs */
     public $incrementing = true; // phpcs:ignore

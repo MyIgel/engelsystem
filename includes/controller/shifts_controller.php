@@ -1,6 +1,5 @@
 <?php
 
-use Engelsystem\Events\DataEvent;
 use Engelsystem\Http\Exceptions\HttpForbidden;
 use Engelsystem\Http\Exceptions\HttpNotFound;
 use Engelsystem\Http\Redirector;
@@ -151,8 +150,6 @@ function shift_edit_controller()
         }
 
         if ($valid) {
-            $oldShift = Shift::find($shift->id);
-
             $shift->shift_type_id = $shifttype_id;
             $shift->title = $title;
             $shift->description = $description;

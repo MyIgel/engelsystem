@@ -1,8 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Engelsystem\Events;
 
-use ArrayAccess;
 use Illuminate\Support\Collection;
 
 /**

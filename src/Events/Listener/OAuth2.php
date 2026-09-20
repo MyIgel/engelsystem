@@ -10,7 +10,6 @@ use Engelsystem\Helpers\Authenticator;
 use Engelsystem\Models\AngelType;
 use Engelsystem\Models\User\User;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Collection;
 use Psr\Log\LoggerInterface;
 
 class OAuth2

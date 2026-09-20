@@ -17,7 +17,7 @@ class EventDispatcher implements EventDispatcherInterface
 
     public function listen(array|string $events, callable|string $listener): void
     {
-        foreach ((array)$events as $event) {
+        foreach ((array) $events as $event) {
             if (Str::contains($event, '*')) {
                 $this->wildcards[$event][] = $listener;
             } else {

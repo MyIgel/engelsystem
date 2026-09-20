@@ -7,7 +7,6 @@ namespace Engelsystem\Controllers\Admin;
 use Engelsystem\Controllers\BaseController;
 use Engelsystem\Controllers\HasUserNotifications;
 use Engelsystem\Controllers\NotificationType;
-use Engelsystem\Events\DataEvent;
 use Engelsystem\Events\NewsEvent;
 use Engelsystem\Helpers\Authenticator;
 use Engelsystem\Http\Redirector;
