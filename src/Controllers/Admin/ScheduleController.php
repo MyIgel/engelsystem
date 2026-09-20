@@ -292,19 +292,6 @@ class ScheduleController extends BaseController
         $this->log->info('Created schedule location "{location}"', ['location' => $room->getName()]);
     }
 
-    protected function deleteScheduleShifts(Event $event, ScheduleModel $schedule): void
-    {
-        /** @var DatabaseCollection|ScheduleShift[] $scheduleShifts */
-        $scheduleShifts = ScheduleShift::where('guid', $event->getGuid())
-            ->where('schedule_id', $schedule->id)
-            ->get();
-
-        foreach ($scheduleShifts as $scheduleShift) {
-            // Manually delete to fire events
-            $scheduleShift->shift->delete();
-        }
-    }
-
     protected function createEvent(Event $event, int $shiftTypeId, Location $location, ScheduleModel $schedule): void
     {
         $user = auth()->user();
@@ -375,24 +362,24 @@ class ScheduleController extends BaseController
 
     protected function deleteEvent(Event $event, ScheduleModel $schedule): void
     {
-        /** @var ScheduleShift $scheduleShift */
-        $scheduleShift = ScheduleShift::whereGuid($event->getGuid())->where('schedule_id', $schedule->id)->first();
-        $shift = $scheduleShift->shift;
+        /** @var ScheduleShift[]|DatabaseCollection $scheduleShifts */
+        $scheduleShifts = ScheduleShift::whereGuid($event->getGuid())->where('schedule_id', $schedule->id)->get();
+        /** @var ScheduleShift $firstShift */
+        $firstShift = $scheduleShifts->first();
 
-        // TODO?
-        $this->deleteScheduleShifts($event, $schedule);
-        $shift->delete();
-        $scheduleShift->delete();
+        foreach ($scheduleShifts as $scheduleShift) {
+            $scheduleShift->shift->delete();
+        }
 
         $this->log->info(
             'Deleted schedule ({schedule}) shift: "{shift}" in {location} ({from} - {to}, {guid})',
             [
-                'schedule' => $scheduleShift->schedule->name,
-                'shift' => $shift->title,
-                'location' => $shift->location->name,
-                'from' => $shift->start->format('Y-m-d H:i'),
-                'to' => $shift->end->format('Y-m-d H:i'),
-                'guid' => $scheduleShift->guid,
+                'schedule' => $schedule->name,
+                'shift' => $firstShift->shift->title,
+                'location' => $firstShift->shift->location->name,
+                'from' => $firstShift->shift->start->format('Y-m-d H:i'),
+                'to' => $firstShift->shift->end->format('Y-m-d H:i'),
+                'guid' => $event->getGuid(),
             ]
         );
     }

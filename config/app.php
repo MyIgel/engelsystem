@@ -98,7 +98,7 @@ return [
 
         'model.shifts.shift.updating' => \Engelsystem\Events\Listener\Shifts::class . '@updatingSendEmail',
 
-        'model.user.user.created' => \Engelsystem\Events\Listener\Users::class . '@created',
+        'user.created' => \Engelsystem\Events\Listener\Users::class . '@created',
     ],
 
     'config_options' => [

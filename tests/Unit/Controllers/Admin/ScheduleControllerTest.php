@@ -42,7 +42,6 @@ use PHPUnit\Framework\MockObject\MockObject;
 #[CoversMethod(ScheduleController::class, 'edit')]
 #[CoversMethod(ScheduleController::class, 'save')]
 #[CoversMethod(ScheduleController::class, 'delete')]
-#[CoversMethod(ScheduleController::class, 'deleteScheduleShifts')]
 #[CoversMethod(ScheduleController::class, 'deleteEvent')]
 #[CoversMethod(ScheduleController::class, 'loadSchedule')]
 #[CoversMethod(ScheduleController::class, 'getScheduleData')]
