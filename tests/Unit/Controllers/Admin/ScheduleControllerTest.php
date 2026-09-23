@@ -7,7 +7,6 @@ namespace Engelsystem\Test\Unit\Controllers\Admin;
 use Engelsystem\Controllers\Admin\ScheduleController;
 use Engelsystem\Controllers\HasUserNotifications;
 use Engelsystem\Controllers\NotificationType;
-use Engelsystem\Events\EventDispatcher;
 use Engelsystem\Helpers\Authenticator;
 use Engelsystem\Helpers\Schedule\Event as EventData;
 use Engelsystem\Helpers\Schedule\Room as RoomData;
@@ -63,7 +62,6 @@ class ScheduleControllerTest extends ControllerTestCase
     use HasUserNotifications;
 
     protected AngelType $angelType;
-    protected EventDispatcher | MockObject $event;
     protected Location $location;
     protected Shift $oldShift;
     protected Redirector | MockObject $redirect;
@@ -207,11 +205,6 @@ class ScheduleControllerTest extends ControllerTestCase
     {
         $this->setExpects($this->redirect, 'to', ['/admin/schedule'], $this->response);
 
-        $this->event->expects($this->exactly(3))
-            ->method('dispatch')
-            ->with('shift.deleting')
-            ->willReturn([]);
-
         $request = Request::create('', 'POST', ['delete' => 'yes'])
             ->withAttribute('schedule_id', $this->schedule->id);
 
@@ -324,18 +317,6 @@ class ScheduleControllerTest extends ControllerTestCase
         $request = Request::create('', 'POST')
             ->withAttribute('schedule_id', $this->schedule->id);
 
-        $matcher = $this->exactly(3);
-        $this->event->expects($matcher)
-            ->method('dispatch')->willReturnCallback(function (...$parameters) use ($matcher) {
-                if ($matcher->numberOfInvocations() === 1) {
-                    $this->assertSame('shift.updating', $parameters[0]);
-                }
-                if ($matcher->numberOfInvocations() === 2) {
-                    $this->assertSame('shift.deleting', $parameters[0]);
-                }
-                return [];
-            });
-
         /** @var ScheduleController $controller */
         $controller = $this->app->make(ScheduleController::class);
         $response = $controller->importSchedule($request);
@@ -438,9 +419,6 @@ class ScheduleControllerTest extends ControllerTestCase
 
         $this->redirect = $this->createMock(Redirector::class);
         $this->app->instance('redirect', $this->redirect);
-
-        $this->event = $this->createMock(EventDispatcher::class);
-        $this->app->instance('events.dispatcher', $this->event);
 
         $this->shiftType = ShiftType::factory()->create();
         $this->location = Location::factory()->create(['name' => 'Example Room']);

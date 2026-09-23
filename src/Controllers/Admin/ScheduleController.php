@@ -367,6 +367,7 @@ class ScheduleController extends BaseController
         $firstShift = $scheduleShifts->first();
 
         foreach ($scheduleShifts as $scheduleShift) {
+            // Manually delete to fire events
             $scheduleShift->shift->delete();
         }
 

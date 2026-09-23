@@ -6,6 +6,7 @@ namespace Engelsystem\Test\Unit\Events\Listener;
 
 use Engelsystem\Config\Config;
 use Engelsystem\Events\Listener\Shifts;
+use Engelsystem\Events\ModelEvent;
 use Engelsystem\Helpers\Authenticator;
 use Engelsystem\Helpers\Carbon;
 use Engelsystem\Helpers\Translation\Translator;
@@ -52,7 +53,7 @@ class ShiftsTest extends TestCase
 
         /** @var Shifts $listener */
         $listener = $this->app->make(Shifts::class);
-        $listener->deletingCreateWorklogs($this->shift);
+        $listener->deletingCreateWorklogs(new ModelEvent('model.shifts.shift.deleting', $this->shift));
 
         $this->assertCount(1, $this->user->worklogs);
         $this->assertEquals($this->shift->isNightShift() ? 4 : 2, $this->user->worklogs[0]->hours);
@@ -70,7 +71,7 @@ class ShiftsTest extends TestCase
 
         /** @var Shifts $listener */
         $listener = $this->app->make(Shifts::class);
-        $listener->deletingCreateWorklogs($this->shift);
+        $listener->deletingCreateWorklogs(new ModelEvent('model.shifts.shift.deleting', $this->shift));
 
         $this->assertCount(0, $this->user->worklogs);
     }
@@ -82,7 +83,7 @@ class ShiftsTest extends TestCase
 
         /** @var Shifts $listener */
         $listener = $this->app->make(Shifts::class);
-        $listener->deletingCreateWorklogs($this->shift);
+        $listener->deletingCreateWorklogs(new ModelEvent('model.shifts.shift.deleting', $this->shift));
 
         $this->assertCount(0, $this->user->worklogs);
     }
@@ -96,7 +97,7 @@ class ShiftsTest extends TestCase
 
         /** @var Shifts $listener */
         $listener = $this->app->make(Shifts::class);
-        $listener->deletingSendEmails($this->shift);
+        $listener->deletingSendEmails(new ModelEvent('model.shifts.shift.deleting', $this->shift));
     }
 
     public function testDeletingSendEmails(): void
@@ -117,7 +118,7 @@ class ShiftsTest extends TestCase
 
         /** @var Shifts $listener */
         $listener = $this->app->make(Shifts::class);
-        $listener->deletingSendEmails($this->shift);
+        $listener->deletingSendEmails(new ModelEvent('model.shifts.shift.deleting', $this->shift));
     }
 
     public function testUpdatedSendEmailNoRelevantChange(): void
@@ -129,7 +130,7 @@ class ShiftsTest extends TestCase
 
         /** @var Shifts $listener */
         $listener = $this->app->make(Shifts::class);
-        $listener->UpdatedSendEmail($this->shift, $oldShift);
+        $listener->updatingSendEmail(new ModelEvent('model.shifts.shift.updating', $this->shift));
     }
 
     public function testUpdatedSendEmailNoNotification(): void
@@ -144,7 +145,7 @@ class ShiftsTest extends TestCase
 
         /** @var Shifts $listener */
         $listener = $this->app->make(Shifts::class);
-        $listener->UpdatedSendEmail($this->shift, $oldShift);
+        $listener->updatingSendEmail(new ModelEvent('model.shifts.shift.updating', $this->shift));
     }
 
     public function testUpdatedSendEmailAlreadyEnded(): void
@@ -153,16 +154,19 @@ class ShiftsTest extends TestCase
 
         $oldShift = Shift::find($this->shift->id);
         $oldShift->end = Carbon::now()->subMinutes(42);
+        $oldShift->save();
+
         $this->shift->end = Carbon::now()->subMinutes(42);
 
         /** @var Shifts $listener */
         $listener = $this->app->make(Shifts::class);
-        $listener->UpdatedSendEmail($this->shift, $oldShift);
+        $listener->updatingSendEmail(new ModelEvent('model.shifts.shift.updating', $this->shift));
     }
 
     public function testUpdatedSendEmail(): void
     {
-        $oldShift = Shift::find($this->shift->id);
+        $oldShift = Shift::find($this->shift->id)
+            ->load(['shiftType', 'location']);
         $this->shift->title = 'Bar';
 
         $this->mailer->expects($this->once())
@@ -186,7 +190,7 @@ class ShiftsTest extends TestCase
 
         /** @var Shifts $listener */
         $listener = $this->app->make(Shifts::class);
-        $listener->UpdatedSendEmail($this->shift, $oldShift);
+        $listener->updatingSendEmail(new ModelEvent('model.shifts.shift.updating', $this->shift));
     }
 
     protected function setUp(): void

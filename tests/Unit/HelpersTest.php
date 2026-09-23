@@ -193,11 +193,13 @@ class HelpersTest extends TestCase
 
     public function testEvent(): void
     {
+
         $app = $this->createMock(Container::class);
         Application::setInstance($app);
 
         $dispatcher = $this->createMock(EventDispatcher::class);
-        $this->setExpects($dispatcher, 'dispatch', ['testevent', ['some' => 'thing']], $dispatcher);
+        $event = new DataEvent('testevent', ['some' => 'thing']);
+        $this->setExpects($dispatcher, 'dispatch', [$event], $event);
 
         $app->expects($this->atLeastOnce())
             ->method('get')
@@ -205,7 +207,6 @@ class HelpersTest extends TestCase
             ->willReturn($dispatcher);
 
         $this->assertEquals($dispatcher, event());
-        $event = new DataEvent('testevent', ['some' => 'thing']);
         $this->assertEquals($event, event($event));
     }
 

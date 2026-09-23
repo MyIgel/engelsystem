@@ -8,6 +8,7 @@ use Engelsystem\Config\Config;
 use Engelsystem\Controllers\Metrics\Controller;
 use Engelsystem\Controllers\Metrics\MetricsEngine;
 use Engelsystem\Controllers\Metrics\Stats;
+use Engelsystem\Events\DataEvent;
 use Engelsystem\Events\EventDispatcher;
 use Engelsystem\Helpers\Version;
 use Engelsystem\Http\Exceptions\HttpForbidden;
@@ -39,7 +40,10 @@ class ControllerTest extends TestCase
         list($response, $request, $engine, $stats, $config, $version) = $this->getMocks();
 
         $dispatcher = $this->createStub(EventDispatcher::class);
-        $dispatcher->method('dispatch')->willReturn(null);
+        $dispatcher->method('dispatch')->willReturnCallback(function (DataEvent $event) {
+            $this->assertNotEmpty($event->metrics);
+            return $event;
+        });
         $this->app->instance('events.dispatcher', $dispatcher);
 
         $request->server = new ServerBag();

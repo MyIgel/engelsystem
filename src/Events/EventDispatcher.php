@@ -42,7 +42,7 @@ class EventDispatcher implements EventDispatcherInterface
         if (is_object($event) && !$eventName) {
             $name = $event instanceof Event && $event->getName() ? $event->getName() : get_class($event);
         }
-        $event = is_object($event) ? $event : new NullEvent();
+        $event = is_object($event) ? $event : new NullEvent($name);
         $isStoppable = $event instanceof StoppableEventInterface;
 
         $listeners = [];

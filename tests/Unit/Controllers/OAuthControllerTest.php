@@ -8,6 +8,7 @@ use Engelsystem\Config\Config;
 use Engelsystem\Controllers\AuthController;
 use Engelsystem\Controllers\OAuthController;
 use Engelsystem\Events\EventDispatcher;
+use Engelsystem\Events\OAuth2 as OAuthEvent;
 use Engelsystem\Helpers\Authenticator;
 use Engelsystem\Http\Exceptions\HttpNotFound;
 use Engelsystem\Http\Redirector;
@@ -18,6 +19,7 @@ use Engelsystem\Models\OAuth;
 use Engelsystem\Models\User\User;
 use Engelsystem\Test\Unit\HasDatabase;
 use Engelsystem\Test\Unit\TestCase;
+use Illuminate\Support\Collection;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Provider\GenericProvider;
 use League\OAuth2\Client\Provider\ResourceOwnerInterface;
@@ -71,18 +73,18 @@ class OAuthControllerTest extends TestCase
     /** @var string[][] */
     protected array $oauthConfig = [
         'testprovider' => [
-            'client_id'     => 'testsystem',
+            'client_id' => 'testsystem',
             'client_secret' => 'foo-bar-baz',
-            'url_auth'      => 'http://localhost/auth',
-            'url_token'     => 'http://localhost/token',
-            'url_info'      => 'http://localhost/info',
-            'id'            => 'uid',
-            'username'      => 'user',
-            'email'         => 'email',
-            'first_name'    => 'given-name',
-            'last_name'     => 'last-name',
-            'url'           => 'http://localhost/',
-            'scope'         => ['foo', 'bar'],
+            'url_auth' => 'http://localhost/auth',
+            'url_token' => 'http://localhost/token',
+            'url_info' => 'http://localhost/info',
+            'id' => 'uid',
+            'username' => 'user',
+            'email' => 'email',
+            'first_name' => 'given-name',
+            'last_name' => 'last-name',
+            'url' => 'http://localhost/',
+            'scope' => ['foo', 'bar'],
         ],
     ];
 
@@ -123,9 +125,10 @@ class OAuthControllerTest extends TestCase
         );
         $this->setExpects($provider, 'getResourceOwner', [$accessToken], $resourceOwner, $this->atLeastOnce());
 
+        $event = new OAuthEvent(OAuthEvent::$LOGIN, 'testprovider', new Collection());
         $dispatcher = $this->createMock(EventDispatcher::class);
         $this->app->instance('events.dispatcher', $dispatcher);
-        $this->setExpects($dispatcher, 'dispatch', ['oauth2.login'], $dispatcher, 4);
+        $this->setExpects($dispatcher, 'dispatch', [$event], $dispatcher, 4);
 
         $this->authController->expects($this->atLeastOnce())
             ->method('loginUser')
@@ -159,7 +162,7 @@ class OAuthControllerTest extends TestCase
         // Login using provider
         $controller->index($request);
         $this->assertFalse($this->session->has('oauth2_connect_provider'));
-        $this->assertFalse((bool) $this->otherUser->state->arrived);
+        $this->assertFalse((bool)$this->otherUser->state->arrived);
 
         // Tokens updated
         $oauth = $this->otherUser->oauth[0];
@@ -173,13 +176,13 @@ class OAuthControllerTest extends TestCase
         $this->config->set('oauth', $oauthConfig);
         $controller->index($request);
 
-        $this->assertTrue((bool) User::find(1)->state->arrived);
+        $this->assertTrue((bool)User::find(1)->state->arrived);
         $this->assertTrue($this->log->hasInfoThatContains('as arrived'));
         $this->log->reset();
 
         // Don't set arrived if already done
         $controller->index($request);
-        $this->assertTrue((bool) User::find(1)->state->arrived);
+        $this->assertTrue((bool)User::find(1)->state->arrived);
         $this->assertFalse($this->log->hasInfoThatContains('as arrived'));
     }
 
@@ -417,11 +420,11 @@ class OAuthControllerTest extends TestCase
             'toArray',
             null,
             [
-                'uid'        => 'ProVIdeR-User-IdenTifIer',
-                'user'       => 'username',
-                'email'      => 'foo.bar@localhost',
+                'uid' => 'ProVIdeR-User-IdenTifIer',
+                'user' => 'username',
+                'email' => 'foo.bar@localhost',
                 'given-name' => 'Foo',
-                'last-name'  => 'Bar',
+                'last-name' => 'Bar',
             ],
             $this->atLeastOnce()
         );
@@ -479,11 +482,11 @@ class OAuthControllerTest extends TestCase
         $config = $this->config->get('oauth');
         $config['testprovider'] = array_merge($config['testprovider'], [
             'nested_info' => true,
-            'id'          => 'nested.id',
-            'email'       => 'nested.email',
-            'username'    => 'nested.name',
-            'first_name'  => 'nested.first',
-            'last_name'   => 'nested.last',
+            'id' => 'nested.id',
+            'email' => 'nested.email',
+            'username' => 'nested.name',
+            'first_name' => 'nested.first',
+            'last_name' => 'nested.last',
         ]);
         $this->config->set('oauth', $config);
 
@@ -497,11 +500,11 @@ class OAuthControllerTest extends TestCase
             null,
             [
                 'nested' => [
-                    'id'    => 42, // new provider user identifier
-                    'name'  => 'testuser',
+                    'id' => 42, // new provider user identifier
+                    'name' => 'testuser',
                     'email' => 'foo.bar@localhost',
                     'first' => 'Test',
-                    'last'  => 'Tester',
+                    'last' => 'Tester',
                 ],
             ],
             $this->atLeastOnce()
@@ -615,7 +618,7 @@ class OAuthControllerTest extends TestCase
         $this->assertTrue($this->log->hasInfoThatContains('Disconnected'));
     }
 
-    protected function getMock(array $mockMethods = []): OAuthController & MockObject
+    protected function getMock(array $mockMethods = []): OAuthController&MockObject
     {
         $controller = $this->getMockBuilder(OAuthController::class)
             ->setConstructorArgs([

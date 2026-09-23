@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Engelsystem\Test\Unit\Controllers\Admin;
 
 use Engelsystem\Controllers\Admin\ShiftsController;
-use Engelsystem\Events\EventDispatcher;
 use Engelsystem\Helpers\Uuid;
 use Engelsystem\Http\Redirector;
 use Engelsystem\Http\Request;
@@ -49,10 +48,6 @@ class ShiftsControllerTest extends ControllerTestCase
         /** @var Shift $shift */
         $shift = Shift::factory(3)->create(['transaction_id' => Uuid::uuid()])->last();
         ShiftEntry::factory(2)->create(['shift_id' => $shift->id]);
-
-        $event = $this->createMock(EventDispatcher::class);
-        $this->app->instance('events.dispatcher', $event);
-        $this->setExpects($event, 'dispatch', ['shift.deleting'], [], $this->exactly(3));
 
         /** @var ShiftsController $controller */
         $controller = $this->app->make(ShiftsController::class);

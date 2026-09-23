@@ -64,6 +64,11 @@ function angeltype_delete_controller()
     $angeltype = AngelType::findOrFail(request()->input('angeltype_id'));
 
     if (request()->hasPostData('delete')) {
+        $angeltype->load(['neededBy.shift.shiftEntries.user']);
+        foreach ($angeltype->neededBy as $need) {
+            // Manually delete to fire events
+            $need->shift->delete();
+        }
         $angeltype->delete();
         engelsystem_log('Deleted angel type: ' . AngelType_name_render($angeltype, true));
         success(sprintf(__('Angel type %s deleted.'), $angeltype->name));
