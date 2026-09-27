@@ -362,7 +362,15 @@ class ScheduleController extends BaseController
     protected function deleteEvent(Event $event, ScheduleModel $schedule): void
     {
         /** @var ScheduleShift[]|DatabaseCollection $scheduleShifts */
-        $scheduleShifts = ScheduleShift::whereGuid($event->getGuid())->where('schedule_id', $schedule->id)->get();
+        $scheduleShifts = ScheduleShift::with([
+            'shift.shiftEntries.user',
+            'shift.shiftEntries.angelType',
+            'shift.shiftType',
+            'shift.location',
+        ])
+            ->where('guid', $event->getGuid())
+            ->where('schedule_id', $schedule->id)
+            ->get();
         /** @var ScheduleShift $firstShift */
         $firstShift = $scheduleShifts->first();
 

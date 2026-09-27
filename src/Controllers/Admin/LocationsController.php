@@ -128,6 +128,12 @@ class LocationsController extends BaseController
         $location = $this->location->findOrFail($data['id']);
 
         $shifts = $location->shifts;
+        $shifts->load([
+            'shiftEntries.user',
+            'shiftEntries.angelType',
+            'shiftType',
+            'location',
+        ]);
         foreach ($shifts as $shift) {
             // Manually delete to fire events
             $shift->delete();

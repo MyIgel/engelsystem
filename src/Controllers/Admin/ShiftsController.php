@@ -53,7 +53,6 @@ class ShiftsController extends BaseController
         /** @var Shift[]|Collection $shifts */
         $shifts = $this->shift->with([
             'location',
-            'shiftEntries',
             'shiftEntries.angelType',
             'shiftEntries.user',
             'shiftType',
@@ -65,6 +64,7 @@ class ShiftsController extends BaseController
         );
 
         foreach ($shifts as $shift) {
+            // Manually delete to fire events
             $shift->delete();
 
             $this->log->info(

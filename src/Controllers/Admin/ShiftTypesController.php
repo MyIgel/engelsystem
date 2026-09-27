@@ -194,6 +194,12 @@ class ShiftTypesController extends BaseController
         $shiftType = $this->shiftType->findOrFail($data['id']);
 
         $shifts = $shiftType->shifts;
+        $shifts->load([
+            'shiftEntries.user',
+            'shiftEntries.angelType',
+            'shiftType',
+            'location',
+        ]);
         foreach ($shifts as $shift) {
             // Manually delete to fire events
             $shift->delete();
