@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Engelsystem\Events\Listener;
 
 use Carbon\Carbon;
+use Engelsystem\Events\DataEvent;
 use Engelsystem\Events\ModelEvent;
 use Engelsystem\Mail\EngelsystemMailer;
 use Engelsystem\Models\Shifts\Shift;
@@ -20,6 +21,11 @@ class Shifts
         protected LoggerInterface $log,
         protected EngelsystemMailer $mailer
     ) {
+    }
+
+    public function deleteShifts(DataEvent $event): void
+    {
+
     }
 
     public function deletingCreateWorklogs(ModelEvent $event): void

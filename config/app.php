@@ -91,11 +91,11 @@ return [
 
         'oauth2.login' => \Engelsystem\Events\Listener\OAuth2::class . '@login',
 
+        'shifts.delete' => \Engelsystem\Events\Listener\Shifts::class . '@deleteShifts',
         'model.shifts.shift.deleting' => [
             \Engelsystem\Events\Listener\Shifts::class . '@deletingCreateWorklogs',
             \Engelsystem\Events\Listener\Shifts::class . '@deletingSendEmails',
         ],
-
         'model.shifts.shift.updating' => \Engelsystem\Events\Listener\Shifts::class . '@updatingSendEmail',
 
         'user.created' => \Engelsystem\Events\Listener\Users::class . '@created',

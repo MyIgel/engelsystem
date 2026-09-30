@@ -3,9 +3,11 @@
 use Engelsystem\Helpers\Carbon;
 use Engelsystem\Models\AngelType;
 use Engelsystem\Models\Location;
+use Engelsystem\Models\Shifts\Shift;
 use Engelsystem\Models\UserAngelType;
 use Engelsystem\ShiftsFilter;
 use Engelsystem\ShiftsFilterRenderer;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Collection;
 
@@ -64,12 +66,21 @@ function angeltype_delete_controller()
     $angeltype = AngelType::findOrFail(request()->input('angeltype_id'));
 
     if (request()->hasPostData('delete')) {
-        $angeltype->load([
-            'neededBy.shift.shiftEntries.user',
-            'neededBy.shift.shiftEntries.angelType',
-            'neededBy.shift.shiftType',
-            'neededBy.shift.location',
-        ]);
+        $shifts = Shift::query()
+            ->leftJoin('shift_entries', 'shift_entries.shift_id', 'shift.id')
+            ->leftJoin('needed_angel_types', 'needed_angel_types.shift_id', 'shift.id')
+            ->where(function (Builder $query) use ($angeltype): void {
+                $query->where('shift_entries.angeltype_id', $angeltype->id)
+                    ->orWhere();
+            })
+            ->with([
+                'shiftEntries.user',
+                'shiftEntries.angelType',
+                'shiftType',
+                'location',
+            ])
+            ->get();
+        // TODO: what else to delete?
         foreach ($angeltype->neededBy as $need) {
             // Manually delete to fire events
             $need->shift->delete();
