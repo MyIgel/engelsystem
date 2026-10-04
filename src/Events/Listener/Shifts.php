@@ -25,7 +25,7 @@ class Shifts
 
     public function deleteShifts(DataEvent $event): void
     {
-
+        # TODO
     }
 
     public function deletingCreateWorklogs(ModelEvent $event): void

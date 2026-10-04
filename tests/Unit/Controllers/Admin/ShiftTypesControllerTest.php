@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Engelsystem\Test\Unit\Controllers\Admin;
 
 use Engelsystem\Controllers\Admin\ShiftTypesController;
-use Engelsystem\Events\EventDispatcher;
 use Engelsystem\Helpers\Carbon;
 use Engelsystem\Http\Exceptions\ValidationException;
 use Engelsystem\Http\Redirector;

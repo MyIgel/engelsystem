@@ -125,7 +125,6 @@ class ShiftsTest extends TestCase
     {
         $this->setExpects($this->mailer, 'sendViewTranslated', null, null, $this->never());
 
-        $oldShift = Shift::find($this->shift->id);
         $this->shift->description = 'Foo';
 
         /** @var Shifts $listener */
@@ -137,7 +136,6 @@ class ShiftsTest extends TestCase
     {
         $this->setExpects($this->mailer, 'sendViewTranslated', null, null, $this->never());
 
-        $oldShift = Shift::find($this->shift->id);
         $this->shift->title = 'Bar';
 
         $this->user->settings->email_shiftinfo = false;

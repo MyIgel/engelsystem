@@ -193,7 +193,6 @@ class HelpersTest extends TestCase
 
     public function testEvent(): void
     {
-
         $app = $this->createMock(Container::class);
         Application::setInstance($app);
 
