@@ -78,12 +78,11 @@ class ConfigServiceProvider extends ServiceProvider
         /** @var Config $config */
         $config = $this->app->get('config');
 
-        if ($config->get('env_config')) {
-            // Already called after registering database
-            return;
+        if (!$config->get('env_config')) {
+            // Request config only once from database
+            $this->loadConfigFromDb($config);
         }
 
-        $this->loadConfigFromDb($config);
         $this->loadConfigFromEnv($config);
 
         $this->parseConfigTypes($config);
