@@ -756,13 +756,15 @@ function User_view(
         && $auth->user()->getHighestGroup()->id >= $user_source->getHighestGroup()?->id;
 
     return page_with_title(
-        '<span class="icon-icon_angel"></span> '
-        . htmlspecialchars($user_source->name)
-        . (config('enable_full_name') ? ' <small>' . $user_name . '</small>' : '')
-        . ((config('enable_pronoun') && $user_source->personalData->pronoun)
-            ? ' <small>(' . htmlspecialchars($user_source->personalData->pronoun) . ')</small> '
-            : '')
-        . user_info_icon($user_source),
+        implode(' ', event(new DataEvent('user_page_name', ['parts' => [
+            'icon' => '<span class="icon-icon_angel"></span>',
+            'name' => htmlspecialchars($user_source->name),
+            'full_name' => (config('enable_full_name') ? '<small>' . $user_name . '</small>' : ''),
+            'pronoun' => ((config('enable_pronoun') && $user_source->personalData->pronoun)
+                ? ' <small>(' . htmlspecialchars($user_source->personalData->pronoun) . ')</small> '
+                : ''),
+            'info' => user_info_icon($user_source),
+        ], 'user' => $user_source]))->data['parts']),
         [
             msg(),
             div('row', [

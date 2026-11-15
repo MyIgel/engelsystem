@@ -13,7 +13,8 @@
         <h2>{{ __('news.comments') }}</h2>
 
         {% for comment in news.comments %}
-        <div class="card {% if theme.type == 'light' %}bg-light{% else %}bg-secondary{% endif %} mb-4">
+            {% block comment %}
+            <div class="card {% if theme.type == 'light' %}bg-light{% else %}bg-secondary{% endif %} mb-4">
                 <div class="card-body {{ m.type_bg_class() }}">
                     {{ comment.text|nl2br }}
                 </div>
@@ -24,8 +25,9 @@
                     </div>
                     {{ m.user(comment.user, {'pronoun': true}) }}
 
-                    {% if comment.user.id == user.id or can('admin_news') or can('comment.delete') %}
-                        <div class="ms-auto">
+                    <div class="d-flex ms-auto">
+                        {% block comment_mod %}
+                        {% if comment.user.id == user.id or can('admin_news') or can('comment.delete') %}
                             <form
                                 action="{{ url('/news/comment/' ~ comment.id) }}" enctype="multipart/form-data"
                                 method="post">
@@ -36,10 +38,12 @@
                                     'confirm_button_text': __('form.delete'),
                                 }) }}
                             </form>
-                        </div>
-                    {% endif %}
+                        {% endif %}
+                        {% endblock %}
+                    </div>
                 </div>
             </div>
+            {% endblock %}
         {% endfor %}
     </div>
 {% endblock %}

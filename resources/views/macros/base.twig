@@ -56,7 +56,7 @@
         {%- if opt.size is defined %} btn-{{ opt.size }}{% endif %}
         {%- if opt.class is defined %} {{ opt.class }}{% endif %}"
         {%- if opt.title is defined %} title="{{ opt.title }}"{% endif -%}
-        {% for name,value in opt.data|default({}) -%} data-{{ name }}="{{ value }}"{% endfor -%}
+        {% for name,value in opt.data|default({}) -%} data-{{ name }}="{{ value|escape('html_attr') }}"{% endfor -%}
     >
         {%- if opt.icon_left is defined %}{{ _self.icon(opt.icon_left) }}{% endif %}
         {{ label }}

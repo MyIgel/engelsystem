@@ -36,6 +36,7 @@
             {% endif %}
         {% endblock %}
 
+        {% block footer_items %}
         {% for name,opt in config('footer_items') %}
             {% set url = opt is iterable ? opt[0] : opt %}
             {% set permission = opt is iterable ? opt[1] : null %}
@@ -57,5 +58,6 @@
         <a href="https://github.com/engelsystem/engelsystem/issues" target="_blank" rel="noopener">{{ __('footer.issues') }}</a>
         · <a href="https://github.com/engelsystem/engelsystem/" target="_blank" rel="noopener">{{ __('footer.github') }}</a>
         · <a href="{{ url('/credits') }}">{{ __('credits.title') }}</a>
+        {% endblock %}
     </div>
 </div>

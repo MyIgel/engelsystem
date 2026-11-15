@@ -1,9 +1,9 @@
 {% import 'macros/base.twig' as m %}
 
-{% macro toolbar_item(label, link, active_page, icon, title) %}
+{% macro toolbar_item(label, link, active_page, icon, title, css) %}
     <li class="nav-item">
         <a
-            class="nav-link{% if page() == active_page %} active{% endif %}"
+            class="nav-link{% if page() == active_page %} active{% endif %}{% if css %} {{ css }}{% endif %}"
             {% if page() == active_page %}aria-current="page"{% endif %}
             {% if title %}title="{{ title }}"{% endif %}
             href="{{ link }}"
@@ -29,12 +29,15 @@
     {% set navbar_expand_class = 'navbar-expand-xxl' %}
 {% endif %}
 
+{% block navbar %}
 <nav class="navbar fixed-top {{ navbar_expand_class }} border-bottom {{ theme['navbar_classes'] }}">
     <div class="container-fluid">
+        {% block brand %}
         <a class="navbar-brand" href="{{ url('/') }}">
             {{ m.angel() }}
             <strong class="visible-lg-inline">{{ config('app_name')|upper }}</strong>
         </a>
+        {% endblock %}
         <button class="navbar-toggler" type="button"
                 data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"
@@ -43,6 +46,7 @@
         </button>
         <div class="collapse navbar-collapse navbar-nav-scroll" id="navbarSupportedContent">
             <ul class="navbar-nav mb-2 mb-lg-0">
+                {% block menu %}
                 {% for name,opt in menu() %}
                     {% set url = opt is iterable ? opt[0] : opt %}
                     {% set permission = opt is iterable ? opt[1] : null %}
@@ -77,9 +81,12 @@
                         {% endif %}
                     {% endif %}
                 {% endfor %}
+                {% endblock %}
             </ul>
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                {% block user_menu %}
                 {% if is_guest() %}
+                    {% block user_menu_guest %}
                     {% include "layouts/parts/language_dropdown.twig" %}
 
                     {% if can('register') and config('registration_enabled') and config('enable_password') %}
@@ -94,9 +101,11 @@
                     {% if can('login') %}
                         {{ _self.toolbar_item(__('general.login'), url('/login'), 'login', 'box-arrow-in-right') }}
                     {% endif %}
+                    {% endblock %}
                 {% endif %}
 
                 {% if is_user() %}
+                    {% block user_menu_user %}
                     {{ _self.toolbar_item(menuUserShiftState(user), url('/shifts', {'action': 'next'}), '', 'clock', __('shift.next')) }}
 
                     {% if can('user_messages') %}
@@ -117,6 +126,7 @@
                             <span class="text-nowrap">{{ m.angel() }} {{ user.displayName }}</span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
+                            {% block user_menu_dropdown %}
                             {% if can('user_myshifts') %}
                                 {{ _self.dropdown_item(__('profile.my_shifts'), url('/users', {'action': 'view'}), 'users', m.icon('calendar-range')) }}
                             {% endif %}
@@ -128,10 +138,14 @@
                             {% if can('logout') %}
                                 {{ _self.dropdown_item(__('general.logout'), url('/logout'), 'logout', m.icon('box-arrow-left')) }}
                             {% endif %}
+                            {% endblock %}
                         </ul>
                     </li>
+                    {% endblock %}
                 {% endif %}
+                {% endblock %}
             </ul>
         </div>
     </div>
 </nav>
+{% endblock %}

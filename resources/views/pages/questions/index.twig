@@ -67,6 +67,7 @@
                         {% endblock %}
 
                         {% for question in questions %}
+                            {% block question %}
                             <div class="row mb-4">
                                 <div class="col-md-12">
                                     <div class="card {% if theme.type =='light' %}bg-light{% else %}bg-secondary{% endif %}">
@@ -84,6 +85,7 @@
                                             {% endif %}
 
                                             <div class="d-flex ms-auto">
+                                                {% block question_mod %}
                                                 {% if can('question.edit') %}
                                                     {{ m.edit(url('/admin/questions/' ~ question.id)) }}
                                                 {% endif %}
@@ -99,6 +101,7 @@
                                                         }) }}
                                                     </form>
                                                 {% endif %}
+                                                {% endblock %}
                                             </div>
                                         </div>
                                     </div>
@@ -119,6 +122,7 @@
                                     </div>
                                 {% endif %}
                             </div> <!-- row -->
+                            {% endblock %}
                         {% endfor %}
                     {% endblock %}
                 </div>

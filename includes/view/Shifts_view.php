@@ -1,6 +1,7 @@
 <?php
 
 use Engelsystem\Config\GoodieType;
+use Engelsystem\Events\DataEvent;
 use Engelsystem\Helpers\Carbon;
 use Engelsystem\Helpers\Markdown;
 use Engelsystem\Models\AngelType;
@@ -299,10 +300,12 @@ function Shift_view(
     }
     $link = back_button(url('/user-shifts'));
     return page_with_title(
-        $link . ' '
-        . htmlspecialchars($shift->shiftType->name)
-        . ' <small title="' . $start . '" data-countdown-ts="' . $shift->start->timestamp . '">%c</small>'
-        . $night_shift_hint,
+        implode(' ', event(new DataEvent('shift_page_name', ['parts' => [
+            'backlink' => $link,
+            'name' => htmlspecialchars($shift->shiftType->name),
+            'subtitle' => '<small title="' . $start . '" data-countdown-ts="' . $shift->start->timestamp . '">%c</small>',
+            'night_shift' => $night_shift_hint,
+        ], 'shift' => $shift]))->data['parts']),
         $content
     );
 }

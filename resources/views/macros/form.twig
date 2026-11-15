@@ -348,7 +348,7 @@ Renders a button.
         {%- if opt.confirm_button_text is defined %}
             data-confirm_button_text="{{ icon_left ~ ' ' ~ opt.confirm_button_text ~ ' ' ~ icon_right }}"
         {%- endif -%}
-        {%- for key, value in opt.attr|default({}) %} {{ key }}="{{ value }}"{% endfor -%}
+        {%- for key, value in opt.attr|default({}) %} {{ key }}="{{ value|escape('html_attr') }}"{% endfor -%}
     >
         {{ icon_left|raw }}
         {{ label }}
