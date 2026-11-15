@@ -146,4 +146,9 @@ class Application extends Container
     {
         return $this->middleware;
     }
+
+    public function getTags(): array
+    {
+        return $this->tags;
+    }
 }

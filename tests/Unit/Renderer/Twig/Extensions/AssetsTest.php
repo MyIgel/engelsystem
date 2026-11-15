@@ -71,4 +71,18 @@ class AssetsTest extends ExtensionTestCase
         $return = $extension->getAsset('assets/lorem.js');
         $this->assertEquals('https://foo.bar/project/assets/lorem-hashed.js', $return);
     }
+
+    public function testGetAssetOfPlugin(): void
+    {
+        $urlGenerator = $this->createMock(UrlGenerator::class);
+        $assets = $this->createMock(AssetsProvider::class);
+
+        $this->setExpects($assets, 'getPluginAssetPath', ['Test:test.js'], 'Test/test.js');
+        $this->setExpects($urlGenerator, 'to', ['/assets/Test/test.js'], 'https://foo.bar/assets/Test/test.js');
+
+        $extension = new Assets($assets, $urlGenerator);
+
+        $return = $extension->getAsset('plugin:Test:test.js');
+        $this->assertEquals('https://foo.bar/assets/Test/test.js', $return);
+    }
 }

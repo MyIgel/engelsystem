@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Engelsystem\Helpers;
 
+use Illuminate\Support\Str;
+
 class Assets
 {
     protected string $manifestFile = 'manifest.json';
@@ -27,5 +29,16 @@ class Assets
         }
 
         return $asset;
+    }
+
+    public function getPluginAssetPath(string $asset): string
+    {
+        list($name, $asset) = explode(':', $asset, 2);
+
+        if (Str::startsWith($asset, 'assets/')) {
+            $asset = Str::replaceFirst('assets/', '', $asset);
+        }
+
+        return $name . '/' . $asset;
     }
 }

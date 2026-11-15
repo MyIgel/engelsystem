@@ -127,6 +127,9 @@ $route->addGroup(
     }
 );
 
+// Assets
+$route->get('/assets/{plugin:\w+}/{asset:.+}', 'AssetsController@pluginAsset');
+
 // API
 $route->addGroup(
     '/api',

@@ -34,6 +34,11 @@ class Assets extends TwigExtension
             $path = 'assets/' . $this->assets->getAssetPath($asset);
         }
 
+        if (Str::startsWith($path, 'plugin:')) {
+            $asset = Str::replaceFirst('plugin:', '', $path);
+            $path = 'assets/' . $this->assets->getPluginAssetPath($asset);
+        }
+
         return $this->urlGenerator->to('/' . $path);
     }
 }

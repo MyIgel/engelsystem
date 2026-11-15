@@ -23,6 +23,7 @@ use ReflectionClass;
 #[CoversMethod(Application::class, 'register')]
 #[CoversMethod(Application::class, 'bootstrap')]
 #[CoversMethod(Application::class, 'getMiddleware')]
+#[CoversMethod(Application::class, 'getTags')]
 #[CoversMethod(Application::class, 'isBooted')]
 class ApplicationTest extends TestCase
 {
@@ -150,6 +151,13 @@ class ApplicationTest extends TestCase
 
         // Run bootstrap another time to ensure that providers are registered only once
         $app->bootstrap($config);
+    }
+
+    public function testGetTags(): void
+    {
+        $app = new Application();
+        $app->tag('foo', 'some-tag');
+        $this->assertEquals(['some-tag' => ['foo']], $app->getTags());
     }
 
     protected function mockServiceProvider(Application $app, array $methods = []): ServiceProvider&MockObject
